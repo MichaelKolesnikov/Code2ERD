@@ -1,6 +1,6 @@
-#include "LineItemModel.h"
+#include "LineModel.h"
 
-LineItemModel::LineItemModel(int id, const QVector<QPointF> &nodes)
+LineModel::LineModel(int id, const QVector<QPointF> &nodes)
    : ERDItemModel(id)
    , QVector<QPointF>(nodes)
 {

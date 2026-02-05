@@ -1,7 +1,7 @@
 #include "PropertyLineItem.h"
-#include "Models/PropertyLineItemModel.h"
+#include "Models/PropertyLineModel.h"
 
-PropertyLineItem::PropertyLineItem(PropertyLineItemModel *model) : LineItem(model), m_model(model)
+PropertyLineItem::PropertyLineItem(PropertyLineModel *model) : LineItem(model), m_model(model)
 {
 
 }

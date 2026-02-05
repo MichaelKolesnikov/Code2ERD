@@ -3,13 +3,13 @@
 #include "ERDScene.h"
 
 #include "Items/LinkItem.h"
-#include "Models/LinkItemModel.h"
-#include "Models/PropertyItemModel.h"
+#include "Models/LinkModel.h"
+#include "Models/PropertyModel.h"
 #include "Items/PropertyItem.h"
 #include "Items/LineItem.h"
-#include "Models/LineItemModel.h"
+#include "Models/LineModel.h"
 #include "Items/LinkLineItem.h"
-#include "Models/LinkLineItemModel.h"
+#include "Models/LinkLineModel.h"
 
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent)
@@ -19,11 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
 
    auto erdScene = new ERDScene(this);
    ui->graphicsView->setScene(erdScene);
-   auto entityModel = new EntityItemModel(0, "Entity", {-200, -200});
-   auto linkModel = new LinkItemModel(0, "Link", {200, 200});
-   auto propertyModel = new PropertyItemModel(0, "Property", {200, -200});
-   auto lineModel = new LineItemModel(0, {{0, 0}, {50, 50}, {0, -50}});
-   auto linkLineModel = new LinkLineItemModel(0, {{0, 0}, {-50, -50}, {0, 50}}, 0, 0, "0", "1");
+   auto entityModel = new EntityModel(0, "Entity", {-200, -200});
+   auto linkModel = new LinkModel(0, "Link", {200, 200});
+   auto propertyModel = new PropertyModel(0, "Property", {200, -200});
+   auto lineModel = new LineModel(0, {{0, 0}, {50, 50}, {0, -50}});
+   auto linkLineModel = new LinkLineModel(0, {{0, 0}, {-50, -50}, {0, 50}}, 0, 0, "0", "1");
 
    erdScene->addItem(new LinkItem(linkModel));
    erdScene->addItem(new EntityItem(entityModel));

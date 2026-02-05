@@ -1,14 +1,14 @@
 #pragma once
 #include "LineItem.h"
-class PropertyLineItemModel;
+class PropertyLineModel;
 
 class PropertyLineItem : public LineItem
 {
    Q_OBJECT
 public:
-   explicit PropertyLineItem(PropertyLineItemModel*);
+   explicit PropertyLineItem(PropertyLineModel*);
 
 private:
-   PropertyLineItemModel* m_model;
+   PropertyLineModel* m_model;
 };
 

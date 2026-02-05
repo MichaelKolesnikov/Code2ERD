@@ -1,10 +1,10 @@
 #pragma once
-#include "LineItemModel.h"
+#include "LineModel.h"
 
-class LinkLineItemModel : public LineItemModel
+class LinkLineModel : public LineModel
 {
 public:
-   explicit LinkLineItemModel(int id, const QVector<QPointF>& nodes, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality);
+   explicit LinkLineModel(int id, const QVector<QPointF>& nodes, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality);
 
    int entityId() const;
    void setEntityId(int newEntityId);

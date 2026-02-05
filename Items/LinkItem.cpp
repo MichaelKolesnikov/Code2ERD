@@ -1,5 +1,5 @@
 #include "LinkItem.h"
-#include "Models/LinkItemModel.h"
+#include "Models/LinkModel.h"
 #include <QPainter>
 
 int LinkItem::type() const
@@ -7,7 +7,7 @@ int LinkItem::type() const
    return LinkItem::Type;
 }
 
-LinkItem::LinkItem(LinkItemModel *model) : EntityItem(model), m_model(model)
+LinkItem::LinkItem(LinkModel *model) : EntityItem(model), m_model(model)
 {
 
 }

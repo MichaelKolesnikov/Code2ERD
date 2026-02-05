@@ -1,10 +1,10 @@
 #pragma once
-#include "LineItemModel.h"
+#include "LineModel.h"
 
-class PropertyLineItemModel : public LineItemModel
+class PropertyLineModel : public LineModel
 {
 public:
-   explicit PropertyLineItemModel(int id, const QVector<QPointF>& nodes, int entityId, int propertyId);
+   explicit PropertyLineModel(int id, const QVector<QPointF>& nodes, int entityId, int propertyId);
 
    int entityId() const;
    void setEntityId(int newEntityId);

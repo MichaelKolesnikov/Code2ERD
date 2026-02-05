@@ -1,8 +1,8 @@
 #include "LinkLineItem.h"
-#include "Models/LinkLineItemModel.h"
+#include "Models/LinkLineModel.h"
 #include <QPainter>
 
-LinkLineItem::LinkLineItem(LinkLineItemModel *model) : LineItem(model), m_model(model)
+LinkLineItem::LinkLineItem(LinkLineModel *model) : LineItem(model), m_model(model)
 {
 
 }

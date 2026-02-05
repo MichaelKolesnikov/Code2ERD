@@ -1,5 +1,5 @@
 #include "PropertyItem.h"
-#include "Models/PropertyItemModel.h"
+#include "Models/PropertyModel.h"
 #include <QPainter>
 
 int PropertyItem::type() const
@@ -7,7 +7,7 @@ int PropertyItem::type() const
    return PropertyItem::Type;
 }
 
-PropertyItem::PropertyItem(PropertyItemModel *model) : EntityItem(model), m_model(model)
+PropertyItem::PropertyItem(PropertyModel *model) : EntityItem(model), m_model(model)
 {
 
 }

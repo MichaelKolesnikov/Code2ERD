@@ -6,7 +6,7 @@ int EntityItem::type() const
    return EntityItem::Type;
 }
 
-EntityItem::EntityItem(EntityItemModel* model) : ERDItem(model), m_model(model)
+EntityItem::EntityItem(EntityModel* model) : ERDItem(model), m_model(model)
 {
    setPos(model->position());
    connect(this, &EntityItem::xChanged, this, [this](){ m_model->setPosition(scenePos()); });

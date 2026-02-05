@@ -1,8 +1,8 @@
 #pragma once
-#include "EntityItemModel.h"
+#include "EntityModel.h"
 
-class PropertyItemModel : public EntityItemModel
+class PropertyModel : public EntityModel
 {
 public:
-   using EntityItemModel::EntityItemModel;
+   using EntityModel::EntityModel;
 };

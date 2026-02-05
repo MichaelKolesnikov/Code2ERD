@@ -1,8 +1,6 @@
-QT       += core gui
+QT       += core gui widgets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -19,14 +17,22 @@ SOURCES += \
     Items/LinkLineItem.cpp \
     Items/PropertyItem.cpp \
     Items/PropertyLineItem.cpp \
+    Mappers/ERDJsonMapper.cpp \
+    Mappers/EntityMapper.cpp \
+    Mappers/LineMapper.cpp \
+    Mappers/LinkLineMapper.cpp \
+    Mappers/LinkMapper.cpp \
+    Mappers/PositionMapper.cpp \
+    Mappers/PropertyLineMapper.cpp \
+    Mappers/PropertyMapper.cpp \
     Models/ERDItemModel.cpp \
     Models/ERDModel.cpp \
-    Models/EntityItemModel.cpp \
-    Models/LineItemModel.cpp \
-    Models/LinkItemModel.cpp \
-    Models/LinkLineItemModel.cpp \
+    Models/EntityModel.cpp \
+    Models/LineModel.cpp \
+    Models/LinkLineModel.cpp \
+    Models/LinkModel.cpp \
     Models/PropertyItemModel.cpp \
-    Models/PropertyLineItemModel.cpp \
+    Models/PropertyLineModel.cpp \
     main.cpp \
     MainWindow.cpp
 
@@ -45,14 +51,22 @@ HEADERS += \
     Items/PropertyLineItem.h \
     Items/ZValue.h \
     MainWindow.h \
+    Mappers/ERDJsonMapper.h \
+    Mappers/EntityMapper.h \
+    Mappers/LineMapper.h \
+    Mappers/LinkLineMapper.h \
+    Mappers/LinkMapper.h \
+    Mappers/PositionMapper.h \
+    Mappers/PropertyLineMapper.h \
+    Mappers/PropertyMapper.h \
     Models/ERDItemModel.h \
     Models/ERDModel.h \
-    Models/EntityItemModel.h \
-    Models/LineItemModel.h \
-    Models/LinkItemModel.h \
-    Models/LinkLineItemModel.h \
-    Models/PropertyItemModel.h \
-    Models/PropertyLineItemModel.h
+    Models/EntityModel.h \
+    Models/LineModel.h \
+    Models/LinkLineModel.h \
+    Models/LinkModel.h \
+    Models/PropertyLineModel.h \
+    Models/PropertyModel.h
 
 FORMS += \
     MainWindow.ui

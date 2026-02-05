@@ -1,6 +1,6 @@
 #pragma once
 #include "EntityItem.h"
-class PropertyItemModel;
+class PropertyModel;
 
 class PropertyItem : public EntityItem
 {
@@ -11,11 +11,11 @@ public:
    };
    int type() const override;
 
-   explicit PropertyItem(PropertyItemModel*);
+   explicit PropertyItem(PropertyModel*);
 
    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 private:
-   PropertyItemModel* m_model;
+   PropertyModel* m_model;
 };
 

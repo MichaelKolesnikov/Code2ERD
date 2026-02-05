@@ -1,6 +1,6 @@
 #pragma once
 #include "EntityItem.h"
-class LinkItemModel;
+class LinkModel;
 
 class LinkItem : public EntityItem
 {
@@ -11,11 +11,11 @@ public:
    };
    int type() const override;
 
-   explicit LinkItem(LinkItemModel*);
+   explicit LinkItem(LinkModel*);
 
    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 private:
-   LinkItemModel* m_model;
+   LinkModel* m_model;
 };
 

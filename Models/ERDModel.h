@@ -1,8 +1,8 @@
 #pragma once
-#include "LinkItemModel.h"
-#include "PropertyItemModel.h"
-#include "PropertyLineItemModel.h"
-#include "LinkLineItemModel.h"
+#include "LinkModel.h"
+#include "PropertyModel.h"
+#include "PropertyLineModel.h"
+#include "LinkLineModel.h"
 #include <QSet>
 
 class ERDModel
@@ -10,28 +10,28 @@ class ERDModel
 public:
    explicit ERDModel();
 
-   void add(EntityItemModel*);
-   void add(PropertyItemModel*);
-   void add(LinkItemModel*);
-   void add(PropertyLineItemModel*);
-   void add(LinkLineItemModel*);
-   void remove(EntityItemModel*);
-   void remove(PropertyItemModel*);
-   void remove(LinkItemModel*);
-   void remove(PropertyLineItemModel*);
-   void remove(LinkLineItemModel*);
+   void add(EntityModel*);
+   void add(PropertyModel*);
+   void add(LinkModel*);
+   void add(PropertyLineModel*);
+   void add(LinkLineModel*);
+   void remove(EntityModel*);
+   void remove(PropertyModel*);
+   void remove(LinkModel*);
+   void remove(PropertyLineModel*);
+   void remove(LinkLineModel*);
 
-   const QSet<EntityItemModel*>& entities() const;
-   const QSet<PropertyItemModel*>& properties() const;
-   const QSet<LinkItemModel*>& links() const;
-   const QSet<PropertyLineItemModel*>& propertyLines() const;
-   const QSet<LinkLineItemModel*>& linkLines() const;
+   const QSet<EntityModel*>& entities() const;
+   const QSet<PropertyModel*>& properties() const;
+   const QSet<LinkModel*>& links() const;
+   const QSet<PropertyLineModel*>& propertyLines() const;
+   const QSet<LinkLineModel*>& linkLines() const;
 
 private:
-   QSet<EntityItemModel*> m_entities;
-   QSet<PropertyItemModel*> m_properties;
-   QSet<LinkItemModel*> m_links;
-   QSet<PropertyLineItemModel*> m_propertyLines;
-   QSet<LinkLineItemModel*> m_linkLines;
+   QSet<EntityModel*> m_entities;
+   QSet<PropertyModel*> m_properties;
+   QSet<LinkModel*> m_links;
+   QSet<PropertyLineModel*> m_propertyLines;
+   QSet<LinkLineModel*> m_linkLines;
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "ERDItem.h"
-#include "Models/EntityItemModel.h"
+#include "Models/EntityModel.h"
 
 class EntityItem : public ERDItem
 {
@@ -11,12 +11,12 @@ public:
    };
    int type() const override;
 
-   explicit EntityItem(EntityItemModel*);
+   explicit EntityItem(EntityModel*);
 
    virtual QRectF boundingRect() const override;
    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 private:
-   EntityItemModel* m_model;
+   EntityModel* m_model;
 };
 

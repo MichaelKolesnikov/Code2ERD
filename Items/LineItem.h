@@ -1,12 +1,12 @@
 #pragma once
 #include "ERDItem.h"
-class LineItemModel;
+class LineModel;
 
 class LineItem : public ERDItem
 {
    Q_OBJECT
 public:
-   explicit LineItem(LineItemModel*);
+   explicit LineItem(LineModel*);
 
    virtual QRectF boundingRect() const override;
    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
@@ -15,6 +15,6 @@ public:
    QPainterPath painterPath() const;
 
 private:
-   LineItemModel* m_model;
+   LineModel* m_model;
 };
 

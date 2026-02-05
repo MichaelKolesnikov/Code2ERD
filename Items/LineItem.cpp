@@ -1,10 +1,10 @@
 #include "LineItem.h"
-#include "Models/LineItemModel.h"
+#include "Models/LineModel.h"
 #include <QPainterPathStroker>
 #include <QPen>
 #include <QPainter>
 
-LineItem::LineItem(LineItemModel *model) : ERDItem(model), m_model(model)
+LineItem::LineItem(LineModel *model) : ERDItem(model), m_model(model)
 {
 }
 
