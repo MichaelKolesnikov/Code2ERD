@@ -3,7 +3,7 @@
 #include <QJsonObject>
 #include <optional>
 
-class ERDJsonConverter
+class ERDMapper
 {
 public:
    static std::optional<ERDModel> fromJson(const QJsonObject&);

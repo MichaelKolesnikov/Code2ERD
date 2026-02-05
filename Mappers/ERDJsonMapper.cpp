@@ -6,7 +6,7 @@
 #include "LinkLineMapper.h"
 #include <QJsonArray>
 
-std::optional<ERDModel> ERDJsonConverter::fromJson(const QJsonObject &jsonObject)
+std::optional<ERDModel> ERDMapper::fromJson(const QJsonObject &jsonObject)
 {
    bool isValid =
       jsonObject.contains(entities) && jsonObject[entities].isArray() &&
@@ -108,7 +108,7 @@ QJsonArray f(const QSet<T>& v)
    return array;
 }
 
-QJsonObject ERDJsonConverter::toJson(const ERDModel &erdModel)
+QJsonObject ERDMapper::toJson(const ERDModel &erdModel)
 {
    QJsonObject answer;
 

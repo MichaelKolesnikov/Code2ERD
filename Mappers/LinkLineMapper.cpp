@@ -11,11 +11,31 @@ std::optional<LinkLineModel> LinkLineMapper::fromJson(const QJsonObject &jsonObj
    auto lineModel = lineOpt.value();
    bool isValid =
       jsonObject.contains(entityId) &&
-      jsonObject[entityId].isDouble() &&
-      jsonObject.contains(linkId) &&
-      jsonObject[linkId].isDouble() &&
+      jsonObject[entityId].isDouble();
+   if (!isValid)
+   {
+      return std::nullopt;
+   }
+   isValid =
+      jsonObject.contains(linkId);
+   if (!isValid)
+   {
+      return std::nullopt;
+   }
+   isValid =
+      jsonObject[linkId].isDouble();
+   if (!isValid)
+   {
+      return std::nullopt;
+   }
+   isValid =
       jsonObject.contains(minCardinality) &&
-      jsonObject[minCardinality].isString() &&
+      jsonObject[minCardinality].isString();
+   if (!isValid)
+   {
+      return std::nullopt;
+   }
+   isValid =
       jsonObject.contains(maxCardinality) &&
       jsonObject[maxCardinality].isString();
    if (!isValid)

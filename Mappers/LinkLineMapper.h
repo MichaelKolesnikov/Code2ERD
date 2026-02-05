@@ -11,7 +11,7 @@ public:
 
 private:
    inline static QString entityId = "entityId";
-   inline static QString linkId = "propertyId";
+   inline static QString linkId = "linkId";
    inline static QString minCardinality = "minCardinality";
    inline static QString maxCardinality = "maxCardinality";
 };

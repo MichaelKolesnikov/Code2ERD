@@ -1,5 +1,6 @@
 #pragma once
 #include <QGraphicsScene>
+#include "Models/ERDModel.h"
 
 class ERDScene : public QGraphicsScene
 {
@@ -8,6 +9,5 @@ class ERDScene : public QGraphicsScene
 public:
    using QGraphicsScene::QGraphicsScene;
 
-
+   void loadModel(ERDModel erdModel);
 };
-
