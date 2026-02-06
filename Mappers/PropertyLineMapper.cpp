@@ -18,7 +18,7 @@ std::optional<PropertyLineModel> PropertyLineMapper::fromJson(const QJsonObject 
    {
       return std::nullopt;
    }
-   return PropertyLineModel(lineModel.id(), lineModel, jsonObject[entityId].toDouble(), jsonObject[propertyId].toDouble());
+   return PropertyLineModel(lineModel.id(), lineModel.position(), lineModel, jsonObject[entityId].toDouble(), jsonObject[propertyId].toDouble());
 }
 
 QJsonObject PropertyLineMapper::toJson(const PropertyLineModel &model)

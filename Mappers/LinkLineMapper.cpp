@@ -44,6 +44,7 @@ std::optional<LinkLineModel> LinkLineMapper::fromJson(const QJsonObject &jsonObj
    }
    return LinkLineModel(
       lineModel.id(),
+      lineModel.position(),
       lineModel,
       jsonObject[entityId].toDouble(),
       jsonObject[linkId].toDouble(),

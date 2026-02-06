@@ -1,7 +1,7 @@
 #include "LinkLineModel.h"
 
-LinkLineModel::LinkLineModel(int id, const QVector<QPointF> &nodes, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality)
-   : LineModel(id, nodes)
+LinkLineModel::LinkLineModel(int id, const QPointF& position, const QVector<int> &moves, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality)
+   : LineModel(id, position, moves)
    , m_entityId(entityId)
    , m_linkId(linkId)
    , m_minCardinality(minCardinality)

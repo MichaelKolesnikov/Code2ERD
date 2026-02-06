@@ -1,11 +1,10 @@
 #pragma once
 #include "ERDItemModel.h"
+#include "Holders/PositionHolder.h"
 #include <QVector>
-#include <QPointF>
 
-class LineModel : public ERDItemModel, public QVector<QPointF>
+class LineModel : public ERDItemModel, public PositionHolder, public QVector<int>
 {
 public:
-   explicit LineModel(int id, const QVector<QPointF>& nodes);
+   explicit LineModel(int id, const QPointF& position, const QVector<int>& moves);
 };
-

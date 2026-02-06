@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "ERDScene.h"
+#include "ERDSceneView.h"
 #include "Mappers/ERDJsonMapper.h"
 
 #include <QFileDialog>
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
    ui->setupUi(this);
 
    m_erdScene = new ERDScene(this);
+   ui->graphicsView->init();
    ui->graphicsView->setScene(m_erdScene);
 }
 

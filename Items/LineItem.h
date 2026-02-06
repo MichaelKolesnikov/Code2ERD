@@ -14,6 +14,8 @@ public:
 
    QPainterPath painterPath() const;
 
+   QVector<QPointF> nodes() const;
+
 private:
    LineModel* m_model;
 };

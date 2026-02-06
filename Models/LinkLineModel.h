@@ -4,7 +4,7 @@
 class LinkLineModel : public LineModel
 {
 public:
-   explicit LinkLineModel(int id, const QVector<QPointF>& nodes, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality);
+   explicit LinkLineModel(int id, const QPointF& position, const QVector<int>& moves, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality);
 
    int entityId() const;
    void setEntityId(int newEntityId);

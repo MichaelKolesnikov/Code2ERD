@@ -10,5 +10,6 @@ public:
    static QJsonObject toJson(const LineModel&);
 private:
    inline static QString id = "id";
-   inline static QString nodes = "nodes";
+   inline static QString position = "position";
+   inline static QString moves = "moves";
 };

@@ -29,10 +29,26 @@ QPainterPath LineItem::shape() const
 
 QPainterPath LineItem::painterPath() const
 {
-   QPainterPath painterPath;
-   for (auto node : *m_model)
+   auto curNodes = nodes();
+   QPainterPath painterPath(curNodes[0]);
+
+   for (int i = 1; i < curNodes.size(); ++i)
    {
-      painterPath.lineTo(node);
+      painterPath.lineTo(curNodes[i]);
    }
    return painterPath;
+}
+
+QVector<QPointF> LineItem::nodes() const
+{
+   QPointF currentPoint = m_model->position();
+   QVector<QPointF> answer = {currentPoint};
+   int coordinateNumber = 0;
+   for (const auto& move : *m_model)
+   {
+      currentPoint += QPointF(!coordinateNumber * move, coordinateNumber * move);
+      answer.push_back(currentPoint);
+      coordinateNumber = (coordinateNumber + 1) % 2;
+   }
+   return answer;
 }

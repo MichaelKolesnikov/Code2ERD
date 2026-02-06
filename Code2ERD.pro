@@ -8,6 +8,7 @@ CONFIG += c++17
 
 SOURCES += \
     ERDScene.cpp \
+    ERDSceneView.cpp \
     Holders/NameHolder.cpp \
     Holders/PositionHolder.cpp \
     Items/ERDItem.cpp \
@@ -38,6 +39,7 @@ SOURCES += \
 
 HEADERS += \
     ERDScene.h \
+    ERDSceneView.h \
     Holders/NameHolder.h \
     Holders/PositionHolder.h \
     Interfaces/IERDItem.h \

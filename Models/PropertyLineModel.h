@@ -4,7 +4,7 @@
 class PropertyLineModel : public LineModel
 {
 public:
-   explicit PropertyLineModel(int id, const QVector<QPointF>& nodes, int entityId, int propertyId);
+   explicit PropertyLineModel(int id, const QPointF& position, const QVector<int> &moves, int entityId, int propertyId);
 
    int entityId() const;
    void setEntityId(int newEntityId);
