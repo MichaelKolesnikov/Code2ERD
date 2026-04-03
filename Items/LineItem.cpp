@@ -41,14 +41,5 @@ QPainterPath LineItem::painterPath() const
 
 QVector<QPointF> LineItem::nodes() const
 {
-   QPointF currentPoint = m_model->position();
-   QVector<QPointF> answer = {currentPoint};
-   int coordinateNumber = 0;
-   for (const auto& move : *m_model)
-   {
-      currentPoint += QPointF(!coordinateNumber * move, coordinateNumber * move);
-      answer.push_back(currentPoint);
-      coordinateNumber = (coordinateNumber + 1) % 2;
-   }
-   return answer;
+   return *m_model;
 }

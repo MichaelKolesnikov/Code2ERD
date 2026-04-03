@@ -1,7 +1,7 @@
 #include "PropertyLineModel.h"
 
-PropertyLineModel::PropertyLineModel(int id, const QPointF& position, const QVector<int> &moves, int entityId, int propertyId)
-   : LineModel(id, position, moves)
+PropertyLineModel::PropertyLineModel(int id, const QVector<QPointF> &moves, int entityId, int propertyId)
+   : LineModel(id, moves)
    , m_entityId(entityId)
    , m_propertyId(propertyId)
 {

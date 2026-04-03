@@ -1,9 +1,8 @@
 #include "LineModel.h"
 
-LineModel::LineModel(int id, const QPointF& position, const QVector<int>& moves)
+LineModel::LineModel(int id, const QVector<QPointF>& moves)
    : ERDItemModel(id)
-   , PositionHolder(position)
-   , QVector<int>(moves)
+   , QVector<QPointF>(moves)
 {
 
 }

@@ -15,23 +15,23 @@ std::optional<LineModel> LineMapper::fromJson(const QJsonObject &jsonObject)
    {
       return std::nullopt;
    }
-   auto linePosOpt = PositionMapper::fromJson(jsonObject[position].toObject());
-   if (!linePosOpt.has_value())
-   {
-      return std::nullopt;
-   }
    auto jsonArray = jsonObject[moves].toArray();
-   QVector<int> lineMoves(jsonArray.size());
+   QVector<QPointF> lineMoves(jsonArray.size());
    int pos = 0;
    for (auto jsonObj : jsonArray)
    {
-      if (!jsonObj.isDouble())
+      if (!jsonObj.isObject())
       {
          return std::nullopt;
       }
-      lineMoves[pos++] = jsonObj.toDouble();
+      auto positionOpt = PositionMapper::fromJson(jsonObj.toObject());
+      if (!positionOpt)
+      {
+         return std::nullopt;
+      }
+      lineMoves[pos++] = positionOpt.value();
    }
-   return LineModel(jsonObject[id].toDouble(), linePosOpt.value(), lineMoves);
+   return LineModel(jsonObject[id].toDouble(), lineMoves);
 }
 
 QJsonObject LineMapper::toJson(const LineModel &model)
@@ -39,7 +39,7 @@ QJsonObject LineMapper::toJson(const LineModel &model)
    QJsonArray jsonArray;
    for (auto pos : model)
    {
-      jsonArray.append(pos);
+      jsonArray.append(PositionMapper::toJson(pos));
    }
    return QJsonObject(
       {
