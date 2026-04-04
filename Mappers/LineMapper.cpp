@@ -31,7 +31,7 @@ LineModel* LineMapper::fromJson(const QJsonObject &jsonObject)
       }
       lineMoves[pos++] = positionOpt.value();
    }
-   return new LineModel(jsonObject[id].toDouble(), lineMoves);
+   return new LineModel(jsonObject[id].toString(), lineMoves);
 }
 
 QJsonObject LineMapper::toJson(const LineModel *model)

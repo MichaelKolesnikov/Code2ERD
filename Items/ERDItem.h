@@ -13,7 +13,7 @@ class ERDItem : public QGraphicsObject, public IERDItem
 public:
    explicit ERDItem(ERDItemModel*);
 
-   virtual int id() const override final;
+   virtual QString id() const override final;
 
 private:
    ERDItemModel* m_model;

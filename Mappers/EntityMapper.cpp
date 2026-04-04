@@ -19,7 +19,7 @@ EntityModel* EntityMapper::fromJson(const QJsonObject &jsonObject)
    {
       return nullptr;
    }
-   return new EntityModel(jsonObject[id].toDouble(), jsonObject[name].toString(), p.value());
+   return new EntityModel(jsonObject[id].toString(), jsonObject[name].toString(), p.value());
 }
 
 QJsonObject EntityMapper::toJson(const EntityModel *model)

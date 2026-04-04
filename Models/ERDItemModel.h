@@ -5,11 +5,11 @@ class ERDItemModel : public QObject
 {
    Q_OBJECT
 public:
-   explicit ERDItemModel(int id);
+   explicit ERDItemModel(QString id);
 
-   int id() const;
+   QString id() const;
 
 private:
-   const int m_id;
+   const QString m_id;
 };
 

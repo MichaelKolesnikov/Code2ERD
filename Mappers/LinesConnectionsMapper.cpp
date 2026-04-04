@@ -25,9 +25,9 @@ LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
          return nullptr;
       }
 
-      int lineId = connObj[lineIdKey].toInt();
+      auto lineId = connObj[lineIdKey].toString();
       bool in = connObj[inKey].toBool();
-      int objId = connObj[objIdKey].toInt();
+      auto objId = connObj[objIdKey].toString();
 
       auto pointOpt = PositionMapper::fromJson(connObj[pointKey].toObject());
       if (!pointOpt.has_value())
@@ -45,8 +45,8 @@ QJsonObject LinesConnectionsMapper::toJson(const LinesConnectionsModel* model)
    auto inConns = model->getInConnections();
    for (auto it = inConns.begin(); it != inConns.end(); ++it)
    {
-      int lineId = it.key();
-      int objId = it.value().first;
+      auto lineId = it.key();
+      auto objId = it.value().first;
       QPointF point = it.value().second;
 
       QJsonObject connObj;
@@ -61,8 +61,8 @@ QJsonObject LinesConnectionsMapper::toJson(const LinesConnectionsModel* model)
    auto outConns = model->getOutConnections();
    for (auto it = outConns.begin(); it != outConns.end(); ++it)
    {
-      int lineId = it.key();
-      int objId = it.value().first;
+      auto lineId = it.key();
+      auto objId = it.value().first;
       QPointF point = it.value().second;
 
       QJsonObject connObj;

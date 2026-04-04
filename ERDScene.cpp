@@ -7,6 +7,7 @@
 #include "Items/LinkLineItem.h"
 #include "Undo/AddRemoveCommand.h"
 
+#include <QUuid>
 #include <QGraphicsSceneContextMenuEvent>
 
 void ERDScene::init()
@@ -89,15 +90,15 @@ void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
    if (selectedAction == addEntityAction)
    {
-      emit signalToPushCommand(new AddRemoveCommand(new EntityModel(0, "Entity", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(new EntityModel(QUuid::createUuid().toString(), "Entity", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
    }
    else if (selectedAction == addLinkAction)
    {
-      emit signalToPushCommand(new AddRemoveCommand(new LinkModel(0, "Link", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(new LinkModel(QUuid::createUuid().toString(), "Link", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
    }
    else if (selectedAction == addPropertyAction)
    {
-      emit signalToPushCommand(new AddRemoveCommand(new PropertyModel(0, "Property", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(new PropertyModel(QUuid::createUuid().toString(), "Property", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
    }
    else if (selectedAction == removeAction && itemToRemove)
    {

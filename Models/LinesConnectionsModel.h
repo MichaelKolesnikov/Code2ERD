@@ -12,24 +12,24 @@ class LinesConnectionsModel : public QObject
 public:
    LinesConnectionsModel();
 
-   void set(int lineId, bool in, int objId=0, const QPointF& pointOnObj={0,0});
+   void set(QString lineId, bool in, QString objId="", const QPointF& pointOnObj={0,0});
 
-   void removeLine(int lineId);
+   void removeLine(QString lineId);
 
-   void removeObj(int objId);
+   void removeObj(QString objId);
 
-   std::optional<QPointF> getAttachmentPoint(int lineId, bool in, int objId) const;
+   std::optional<QPointF> getAttachmentPoint(QString lineId, bool in, QString objId) const;
 
-   int getObj(int lineId, bool in) const;
+   QString getObj(QString lineId, bool in) const;
 
-   QMap<int, QPair<int, QPointF>> getInConnections() const;
-   QMap<int, QPair<int, QPointF>> getOutConnections() const;
+   QMap<QString, QPair<QString, QPointF>> getInConnections() const;
+   QMap<QString, QPair<QString, QPointF>> getOutConnections() const;
 
 signals:
-   void lineChanged(int lineId, bool in, int objId=0, const QPointF& pointOnObj={0,0});
+   void lineChanged(QString lineId, bool in, QString objId="", const QPointF& pointOnObj={0,0});
 
 private:
-   QMap<int, QPair<int, QPointF>> m_lineInToObj;
-   QMap<int, QPair<int, QPointF>> m_lineOutToObj;
-   QMap<int, QSet<int>> m_objToLines;
+   QMap<QString, QPair<QString, QPointF>> m_lineInToObj;
+   QMap<QString, QPair<QString, QPointF>> m_lineOutToObj;
+   QMap<QString, QSet<QString>> m_objToLines;
 };

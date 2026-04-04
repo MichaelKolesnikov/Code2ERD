@@ -5,13 +5,13 @@ LinesConnectionsModel::LinesConnectionsModel()
 
 }
 
-void LinesConnectionsModel::set(int lineId, bool in, int objId, const QPointF &pointOnObj)
+void LinesConnectionsModel::set(QString lineId, bool in, QString objId, const QPointF &pointOnObj)
 {
-   if (!lineId)
+   if (lineId.isEmpty())
    {
       return;
    }
-   QPair<int, QPointF> nullPair = {0, {0,0}};
+   QPair<QString, QPointF> nullPair = {"", {0,0}};
    if (in && !m_lineInToObj.contains(lineId))
    {
       m_lineInToObj[lineId] = nullPair;
@@ -31,7 +31,7 @@ void LinesConnectionsModel::set(int lineId, bool in, int objId, const QPointF &p
       }
    }
 
-   if (!objId)
+   if (objId.isEmpty())
    {
       if (in)
       {
@@ -46,7 +46,7 @@ void LinesConnectionsModel::set(int lineId, bool in, int objId, const QPointF &p
    }
    else
    {
-      QPair<int, QPointF> p = {objId, pointOnObj};
+      QPair<QString, QPointF> p = {objId, pointOnObj};
       if (in)
       {
          if (m_lineInToObj[lineId] != p)
@@ -67,15 +67,15 @@ void LinesConnectionsModel::set(int lineId, bool in, int objId, const QPointF &p
    }
 }
 
-void LinesConnectionsModel::removeLine(int lineId)
+void LinesConnectionsModel::removeLine(QString lineId)
 {
    set(lineId, true);
    set(lineId, false);
 }
 
-void LinesConnectionsModel::removeObj(int objId)
+void LinesConnectionsModel::removeObj(QString objId)
 {
-   if (!objId)
+   if (objId.isEmpty())
    {
       return;
    }
@@ -96,9 +96,9 @@ void LinesConnectionsModel::removeObj(int objId)
    m_objToLines.remove(objId);
 }
 
-std::optional<QPointF> LinesConnectionsModel::getAttachmentPoint(int lineId, bool in, int objId) const
+std::optional<QPointF> LinesConnectionsModel::getAttachmentPoint(QString lineId, bool in, QString objId) const
 {
-   if (!lineId || !objId)
+   if (lineId.isEmpty() || objId.isEmpty())
    {
       return std::nullopt;
    }
@@ -111,17 +111,17 @@ std::optional<QPointF> LinesConnectionsModel::getAttachmentPoint(int lineId, boo
       (m_lineOutToObj.contains(lineId) && m_lineOutToObj[lineId].first == objId ? std::optional<QPointF>(m_lineOutToObj[lineId].second) : std::nullopt);
 }
 
-int LinesConnectionsModel::getObj(int lineId, bool in) const
+QString LinesConnectionsModel::getObj(QString lineId, bool in) const
 {
-   if (!lineId)
+   if (lineId.isEmpty())
    {
-      return 0;
+      return "";
    }
    if (in)
    {
       if (!m_lineInToObj.contains(lineId))
       {
-         return 0;
+         return "";
       }
       return m_lineInToObj[lineId].first;
    }
@@ -129,18 +129,18 @@ int LinesConnectionsModel::getObj(int lineId, bool in) const
    {
       if (!m_lineOutToObj.contains(lineId))
       {
-         return 0;
+         return "";
       }
       return m_lineOutToObj[lineId].first;
    }
 }
 
-QMap<int, QPair<int, QPointF> > LinesConnectionsModel::getInConnections() const
+QMap<QString, QPair<QString, QPointF> > LinesConnectionsModel::getInConnections() const
 {
    return m_lineInToObj;
 }
 
-QMap<int, QPair<int, QPointF> > LinesConnectionsModel::getOutConnections() const
+QMap<QString, QPair<QString, QPointF> > LinesConnectionsModel::getOutConnections() const
 {
    return m_lineOutToObj;
 }

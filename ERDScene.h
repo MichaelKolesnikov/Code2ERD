@@ -39,5 +39,5 @@ private:
    void addErdItemFromModel(ERDItemModel* itemModel);
 
    ERDModel* m_erdModel;
-   QMap<int, Binding> m_idToBinding;
+   QMap<QString, Binding> m_idToBinding;
 };

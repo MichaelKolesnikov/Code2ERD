@@ -11,7 +11,7 @@ class LineModel : public ERDItemModel, public QVector<QPointF>
    Q_PROPERTY(QVector<QPointF> nodes READ nodes WRITE setNodes NOTIFY nodesChanged)
 
 public:
-   explicit LineModel(int id, const QVector<QPointF>& points);
+   explicit LineModel(QString id, const QVector<QPointF>& points);
 
    QVector<QPointF> nodes() const;
    void setNodes(const QVector<QPointF>& points);
