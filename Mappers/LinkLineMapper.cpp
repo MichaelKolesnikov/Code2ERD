@@ -1,63 +1,40 @@
 #include "LinkLineMapper.h"
 #include "LineMapper.h"
 
-std::optional<LinkLineModel> LinkLineMapper::fromJson(const QJsonObject &jsonObject)
+LinkLineModel* LinkLineMapper::fromJson(const QJsonObject &jsonObject)
 {
    auto lineOpt = LineMapper::fromJson(jsonObject);
-   if (!lineOpt.has_value())
+   if (!lineOpt)
    {
-      return std::nullopt;
+      return nullptr;
    }
-   auto lineModel = lineOpt.value();
+   auto lineModel = lineOpt;
    bool isValid =
-      jsonObject.contains(entityId) &&
-      jsonObject[entityId].isDouble();
-   if (!isValid)
-   {
-      return std::nullopt;
-   }
-   isValid =
-      jsonObject.contains(linkId);
-   if (!isValid)
-   {
-      return std::nullopt;
-   }
-   isValid =
-      jsonObject[linkId].isDouble();
-   if (!isValid)
-   {
-      return std::nullopt;
-   }
-   isValid =
       jsonObject.contains(minCardinality) &&
       jsonObject[minCardinality].isString();
    if (!isValid)
    {
-      return std::nullopt;
+      return nullptr;
    }
    isValid =
       jsonObject.contains(maxCardinality) &&
       jsonObject[maxCardinality].isString();
    if (!isValid)
    {
-      return std::nullopt;
+      return nullptr;
    }
-   return LinkLineModel(
-      lineModel.id(),
-      lineModel,
-      jsonObject[entityId].toDouble(),
-      jsonObject[linkId].toDouble(),
+   return new LinkLineModel(
+      lineModel->id(),
+      *lineModel,
       jsonObject[minCardinality].toString(),
       jsonObject[maxCardinality].toString()
    );
 }
 
-QJsonObject LinkLineMapper::toJson(const LinkLineModel &model)
+QJsonObject LinkLineMapper::toJson(const LinkLineModel *model)
 {
    auto jsonObject = LineMapper::toJson(model);
-   jsonObject[entityId] = model.entityId();
-   jsonObject[linkId] = model.linkId();
-   jsonObject[minCardinality] = model.minCardinality();
-   jsonObject[maxCardinality] = model.maxCardinality();
+   jsonObject[minCardinality] = model->minCardinality();
+   jsonObject[maxCardinality] = model->maxCardinality();
    return jsonObject;
 }

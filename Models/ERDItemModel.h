@@ -1,13 +1,15 @@
 #pragma once
+#include <QObject>
 
-class ERDItemModel
+class ERDItemModel : public QObject
 {
+   Q_OBJECT
 public:
    explicit ERDItemModel(int id);
 
    int id() const;
 
 private:
-   int m_id;
+   const int m_id;
 };
 

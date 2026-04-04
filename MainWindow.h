@@ -6,6 +6,7 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class ERDScene;
+class QUndoStack;
 
 class MainWindow : public QMainWindow
 {
@@ -22,4 +23,5 @@ private:
    Ui::MainWindow *ui;
 
    ERDScene* m_erdScene;
+   QUndoStack* m_undoStack;
 };

@@ -9,6 +9,8 @@ CONFIG += c++17
 SOURCES += \
     ERDScene.cpp \
     ERDSceneView.cpp \
+    Undo/AddRemoveCommand.cpp \
+    Undo/ERDUndoCommand.cpp \
     Holders/NameHolder.cpp \
     Holders/PositionHolder.cpp \
     Items/ERDItem.cpp \
@@ -17,29 +19,31 @@ SOURCES += \
     Items/LinkItem.cpp \
     Items/LinkLineItem.cpp \
     Items/PropertyItem.cpp \
-    Items/PropertyLineItem.cpp \
     Mappers/ERDJsonMapper.cpp \
     Mappers/EntityMapper.cpp \
     Mappers/LineMapper.cpp \
+    Mappers/LinesConnectionsMapper.cpp \
     Mappers/LinkLineMapper.cpp \
     Mappers/LinkMapper.cpp \
     Mappers/PositionMapper.cpp \
-    Mappers/PropertyLineMapper.cpp \
     Mappers/PropertyMapper.cpp \
     Models/ERDItemModel.cpp \
     Models/ERDModel.cpp \
     Models/EntityModel.cpp \
     Models/LineModel.cpp \
+    Models/LinesConnectionsModel.cpp \
     Models/LinkLineModel.cpp \
     Models/LinkModel.cpp \
     Models/PropertyItemModel.cpp \
-    Models/PropertyLineModel.cpp \
+    RestrictedMenu.cpp \
     main.cpp \
     MainWindow.cpp
 
 HEADERS += \
     ERDScene.h \
     ERDSceneView.h \
+    Undo/AddRemoveCommand.h \
+    Undo/ERDUndoCommand.h \
     Holders/NameHolder.h \
     Holders/PositionHolder.h \
     Interfaces/IERDItem.h \
@@ -50,25 +54,25 @@ HEADERS += \
     Items/LinkItem.h \
     Items/LinkLineItem.h \
     Items/PropertyItem.h \
-    Items/PropertyLineItem.h \
     Items/ZValue.h \
     MainWindow.h \
     Mappers/ERDJsonMapper.h \
     Mappers/EntityMapper.h \
     Mappers/LineMapper.h \
+    Mappers/LinesConnectionsMapper.h \
     Mappers/LinkLineMapper.h \
     Mappers/LinkMapper.h \
     Mappers/PositionMapper.h \
-    Mappers/PropertyLineMapper.h \
     Mappers/PropertyMapper.h \
     Models/ERDItemModel.h \
     Models/ERDModel.h \
     Models/EntityModel.h \
     Models/LineModel.h \
+    Models/LinesConnectionsModel.h \
     Models/LinkLineModel.h \
     Models/LinkModel.h \
-    Models/PropertyLineModel.h \
-    Models/PropertyModel.h
+    Models/PropertyModel.h \
+    RestrictedMenu.h
 
 FORMS += \
     MainWindow.ui

@@ -6,6 +6,6 @@
 class LinkMapper
 {
 public:
-   static std::optional<LinkModel> fromJson(const QJsonObject&);
-   static QJsonObject toJson(const LinkModel&);
+   static LinkModel* fromJson(const QJsonObject&);
+   static QJsonObject toJson(const LinkModel*);
 };

@@ -1,6 +1,6 @@
 #include "ERDItemModel.h"
 
-ERDItemModel::ERDItemModel(int id) : m_id(id)
+ERDItemModel::ERDItemModel(int id) : QObject(), m_id(id)
 {
 
 }

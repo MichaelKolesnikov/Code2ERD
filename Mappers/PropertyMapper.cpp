@@ -1,18 +1,18 @@
 #include "PropertyMapper.h"
 #include "EntityMapper.h"
 
-std::optional<PropertyModel> PropertyMapper::fromJson(const QJsonObject &jsonObject)
+PropertyModel* PropertyMapper::fromJson(const QJsonObject &jsonObject)
 {
    auto entityModelOpt = EntityMapper::fromJson(jsonObject);
-   if (!entityModelOpt.has_value())
+   if (!entityModelOpt)
    {
-      return std::nullopt;
+      return nullptr;
    }
-   auto entityModel = entityModelOpt.value();
-   return PropertyModel(entityModel.id(), entityModel.name(), entityModel.position());
+   auto entityModel = entityModelOpt;
+   return new PropertyModel(entityModel->id(), entityModel->name(), entityModel->position());
 }
 
-QJsonObject PropertyMapper::toJson(const PropertyModel &model)
+QJsonObject PropertyMapper::toJson(const PropertyModel *model)
 {
    return EntityMapper::toJson(model);
 }

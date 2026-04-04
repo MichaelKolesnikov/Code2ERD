@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QJsonDocument>
+#include <QUndoStack>
 
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent)
@@ -14,9 +15,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
    ui->setupUi(this);
 
+   m_undoStack = new QUndoStack(this);
+
    m_erdScene = new ERDScene(this);
+   m_erdScene->init();
    ui->graphicsView->init();
    ui->graphicsView->setScene(m_erdScene);
+
+   connect(m_erdScene, &ERDScene::signalToPushCommand, this, [this](QUndoCommand* cmd){
+      m_undoStack->push(cmd);
+   });
 }
 
 MainWindow::~MainWindow()
@@ -46,10 +54,10 @@ void MainWindow::on_actionOpen_triggered()
       return;
    }
    auto erdModel = ERDMapper::fromJson(jsonDoc.object());
-   if (!erdModel.has_value())
+   if (!erdModel)
    {
       return;
    }
-   m_erdScene->loadModel(erdModel.value());
+   m_erdScene->loadModel(erdModel);
 }
 

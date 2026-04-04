@@ -2,7 +2,7 @@
 #include "PositionMapper.h"
 #include <QJsonArray>
 
-std::optional<LineModel> LineMapper::fromJson(const QJsonObject &jsonObject)
+LineModel* LineMapper::fromJson(const QJsonObject &jsonObject)
 {
    bool isValid =
          jsonObject.contains(id) &&
@@ -13,7 +13,7 @@ std::optional<LineModel> LineMapper::fromJson(const QJsonObject &jsonObject)
          jsonObject[moves].isArray();
    if (!isValid)
    {
-      return std::nullopt;
+      return nullptr;
    }
    auto jsonArray = jsonObject[moves].toArray();
    QVector<QPointF> lineMoves(jsonArray.size());
@@ -22,28 +22,28 @@ std::optional<LineModel> LineMapper::fromJson(const QJsonObject &jsonObject)
    {
       if (!jsonObj.isObject())
       {
-         return std::nullopt;
+         return nullptr;
       }
       auto positionOpt = PositionMapper::fromJson(jsonObj.toObject());
       if (!positionOpt)
       {
-         return std::nullopt;
+         return nullptr;
       }
       lineMoves[pos++] = positionOpt.value();
    }
-   return LineModel(jsonObject[id].toDouble(), lineMoves);
+   return new LineModel(jsonObject[id].toDouble(), lineMoves);
 }
 
-QJsonObject LineMapper::toJson(const LineModel &model)
+QJsonObject LineMapper::toJson(const LineModel *model)
 {
    QJsonArray jsonArray;
-   for (auto pos : model)
+   for (auto pos : *model)
    {
       jsonArray.append(PositionMapper::toJson(pos));
    }
    return QJsonObject(
       {
-         {id, model.id()},
+         {id, model->id()},
          {position, jsonArray},
          {moves, jsonArray}
       }

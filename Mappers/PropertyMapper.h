@@ -6,7 +6,7 @@
 class PropertyMapper
 {
 public:
-   static std::optional<PropertyModel> fromJson(const QJsonObject&);
-   static QJsonObject toJson(const PropertyModel&);
+   static PropertyModel* fromJson(const QJsonObject&);
+   static QJsonObject toJson(const PropertyModel*);
 };
 

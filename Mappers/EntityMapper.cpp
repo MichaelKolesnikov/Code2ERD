@@ -1,7 +1,7 @@
 #include "EntityMapper.h"
 #include "PositionMapper.h"
 
-std::optional<EntityModel> EntityMapper::fromJson(const QJsonObject &jsonObject)
+EntityModel* EntityMapper::fromJson(const QJsonObject &jsonObject)
 {
    bool isValid =
          jsonObject.contains(id) &&
@@ -12,23 +12,23 @@ std::optional<EntityModel> EntityMapper::fromJson(const QJsonObject &jsonObject)
          jsonObject[position].isObject();
    if (!isValid)
    {
-      return std::nullopt;
+      return nullptr;
    }
    auto p = PositionMapper::fromJson(jsonObject[position].toObject());
    if (!p.has_value())
    {
-      return std::nullopt;
+      return nullptr;
    }
-   return EntityModel(jsonObject[id].toDouble(), jsonObject[name].toString(), p.value());
+   return new EntityModel(jsonObject[id].toDouble(), jsonObject[name].toString(), p.value());
 }
 
-QJsonObject EntityMapper::toJson(const EntityModel &model)
+QJsonObject EntityMapper::toJson(const EntityModel *model)
 {
    return QJsonObject(
       {
-         {id, model.id()},
-         {name, model.name()},
-         {position, PositionMapper::toJson(model.position())}
+         {id, model->id()},
+         {name, model->name()},
+         {position, PositionMapper::toJson(model->position())}
       }
    );
 }

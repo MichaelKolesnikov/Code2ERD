@@ -1,33 +1,11 @@
 #include "LinkLineModel.h"
 
-LinkLineModel::LinkLineModel(int id, const QVector<QPointF> &moves, int entityId, int linkId, const QString &minCardinality, const QString &maxCardinality)
+LinkLineModel::LinkLineModel(int id, const QVector<QPointF> &moves, const QString &minCardinality, const QString &maxCardinality)
    : LineModel(id, moves)
-   , m_entityId(entityId)
-   , m_linkId(linkId)
    , m_minCardinality(minCardinality)
    , m_maxCardinality(maxCardinality)
 {
 
-}
-
-int LinkLineModel::entityId() const
-{
-   return m_entityId;
-}
-
-void LinkLineModel::setEntityId(int newEntityId)
-{
-   m_entityId = newEntityId;
-}
-
-int LinkLineModel::linkId() const
-{
-   return m_linkId;
-}
-
-void LinkLineModel::setLinkId(int newLinkId)
-{
-   m_linkId = newLinkId;
 }
 
 const QString &LinkLineModel::minCardinality() const
@@ -37,7 +15,9 @@ const QString &LinkLineModel::minCardinality() const
 
 void LinkLineModel::setMinCardinality(const QString &newMinCardinality)
 {
+   if (m_minCardinality == newMinCardinality) return;
    m_minCardinality = newMinCardinality;
+   emit minCardinalityChanged();
 }
 
 const QString &LinkLineModel::maxCardinality() const
@@ -47,5 +27,7 @@ const QString &LinkLineModel::maxCardinality() const
 
 void LinkLineModel::setMaxCardinality(const QString &newMaxCardinality)
 {
+   if (m_maxCardinality == newMaxCardinality) return;
    m_maxCardinality = newMaxCardinality;
+   emit maxCardinalityChanged();
 }

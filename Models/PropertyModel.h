@@ -3,6 +3,7 @@
 
 class PropertyModel : public EntityModel
 {
+   Q_OBJECT
 public:
    using EntityModel::EntityModel;
 };

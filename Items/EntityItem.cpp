@@ -9,9 +9,9 @@ int EntityItem::type() const
 EntityItem::EntityItem(EntityModel* model) : ERDItem(model), m_model(model)
 {
    setPos(model->position());
-   connect(this, &EntityItem::xChanged, this, [this](){ m_model->setPosition(scenePos()); });
-   connect(this, &EntityItem::yChanged, this, [this](){ m_model->setPosition(scenePos()); });
-   connect(this, &EntityItem::zChanged, this, [this](){ m_model->setPosition(scenePos()); });
+   connect(this, &EntityItem::xChanged, this, [this](){  });
+   connect(this, &EntityItem::yChanged, this, [this](){  });
+   connect(this, &EntityItem::zChanged, this, [this](){  });
 }
 
 QRectF EntityItem::boundingRect() const
