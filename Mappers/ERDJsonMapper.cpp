@@ -20,7 +20,7 @@ ERDModel* ERDMapper::fromJson(const QJsonObject &jsonObject)
    {
       return nullptr;
    }
-   ERDModel* erdModel;
+   ERDModel* erdModel = new ERDModel();
    for (auto json : jsonObject[entities].toArray())
    {
       if (!json.isObject())
@@ -115,7 +115,7 @@ ERDModel* ERDMapper::fromJson(const QJsonObject &jsonObject)
 }
 
 template <class Mapper, class T>
-QJsonArray f(const QList<T>& v)
+QJsonArray f(const QSet<T>& v)
 {
    QJsonArray array;
    for (auto model : v)

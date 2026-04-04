@@ -1,8 +1,11 @@
 #pragma once
 #include <QGraphicsScene>
-#include "Models/ERDModel.h"
+#include <QMap>
 
 class QUndoCommand;
+class ERDItemModel;
+class ERDModel;
+class ERDItem;
 
 class ERDScene : public QGraphicsScene
 {
@@ -27,5 +30,14 @@ protected:
    virtual void wheelEvent(QGraphicsSceneWheelEvent *event) override;
 
 private:
+   struct Binding
+   {
+      ERDItemModel* erdItemModel;
+      ERDItem* erdItem;
+   };
+
+   void addErdItemFromModel(ERDItemModel* itemModel);
+
    ERDModel* m_erdModel;
+   QMap<int, Binding> m_idToBinding;
 };

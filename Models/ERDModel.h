@@ -26,13 +26,11 @@ public:
    void remove(LineModel*);
    void remove(LinkLineModel*);
 
-   QList<EntityModel*> entities() const;
-   QList<PropertyModel*> properties() const;
-   QList<LinkModel*> links() const;
-   QList<LineModel*> propertyLines() const;
-   QList<LinkLineModel*> linkLines() const;
-
-   ERDItemModel* getItemById(int);
+   const QSet<EntityModel*> &entities() const;
+   const QSet<PropertyModel*> &properties() const;
+   const QSet<LinkModel*> &links() const;
+   const QSet<LineModel*> &propertyLines() const;
+   const QSet<LinkLineModel*> &linkLines() const;
 
 signals:
    void added(ERDItemModel*);
@@ -49,11 +47,11 @@ signals:
 //   void removed(LineModel*);
 //   void removed(LinkLineModel*);
 private:
-   QMap<int, EntityModel*> m_entities;
-   QMap<int, PropertyModel*> m_properties;
-   QMap<int, LinkModel*> m_links;
-   QMap<int, LineModel*> m_propertyLines;
-   QMap<int, LinkLineModel*> m_linkLines;
+   QSet<EntityModel*> m_entities;
+   QSet<PropertyModel*> m_properties;
+   QSet<LinkModel*> m_links;
+   QSet<LineModel*> m_propertyLines;
+   QSet<LinkLineModel*> m_linkLines;
    LinesConnectionsModel* m_linesConnectionsModel;
 };
 

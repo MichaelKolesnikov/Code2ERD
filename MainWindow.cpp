@@ -32,6 +32,21 @@ MainWindow::~MainWindow()
    delete ui;
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+   if (event->key() == Qt::Key_Z && (event->modifiers() & Qt::ControlModifier))
+   {
+      if (event->modifiers() & Qt::ShiftModifier)
+      {
+         m_undoStack->redo();
+      }
+      else
+      {
+         m_undoStack->undo();
+      }
+   }
+}
+
 void MainWindow::on_actionOpen_triggered()
 {
    QString pathToFile = QFileDialog::getOpenFileName(this, "Open Json File", QDir::homePath(), "*.json");

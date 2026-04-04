@@ -31,31 +31,31 @@ void ERDModel::add(ERDItemModel *itemModel)
 
 void ERDModel::add(EntityModel *itemModel)
 {
-   m_entities[itemModel->id()] = itemModel;
+   m_entities.insert(itemModel);
    emit added(itemModel);
 }
 
 void ERDModel::add(PropertyModel *itemModel)
 {
-   m_properties[itemModel->id()] = itemModel;
+   m_properties.insert(itemModel);
    emit added(itemModel);
 }
 
 void ERDModel::add(LinkModel *itemModel)
 {
-   m_links[itemModel->id()] = itemModel;
+   m_links.insert(itemModel);
    emit added(itemModel);
 }
 
 void ERDModel::add(LineModel *itemModel)
 {
-   m_propertyLines[itemModel->id()] = itemModel;
+   m_propertyLines.insert(itemModel);
    emit added(itemModel);
 }
 
 void ERDModel::add(LinkLineModel *itemModel)
 {
-   m_linkLines[itemModel->id()] = itemModel;
+   m_linkLines.insert(itemModel);
    emit added(itemModel);
 }
 
@@ -94,80 +94,55 @@ void ERDModel::remove(ERDItemModel *itemModel)
 
 void ERDModel::remove(EntityModel *itemModel)
 {
-   m_entities.remove(itemModel->id());
+   m_entities.remove(itemModel);
    emit removed(itemModel);
 }
 
 void ERDModel::remove(PropertyModel *itemModel)
 {
-   m_properties.remove(itemModel->id());
+   m_properties.remove(itemModel);
    emit removed(itemModel);
 }
 
 void ERDModel::remove(LinkModel *itemModel)
 {
-   m_links.remove(itemModel->id());
+   m_links.remove(itemModel);
    emit removed(itemModel);
 }
 
 void ERDModel::remove(LineModel *itemModel)
 {
-   m_propertyLines.remove(itemModel->id());
+   m_propertyLines.remove(itemModel);
    emit removed(itemModel);
 }
 
 void ERDModel::remove(LinkLineModel *itemModel)
 {
-   m_linkLines.remove(itemModel->id());
+   m_linkLines.remove(itemModel);
    emit removed(itemModel);
 }
 
-QList<EntityModel *> ERDModel::entities() const
+const QSet<EntityModel *> &ERDModel::entities() const
 {
-   return m_entities.values();
+   return m_entities;
 }
 
-QList<PropertyModel *> ERDModel::properties() const
+const QSet<PropertyModel *> &ERDModel::properties() const
 {
-   return m_properties.values();
+   return m_properties;
 }
 
-QList<LinkModel *> ERDModel::links() const
+const QSet<LinkModel *> &ERDModel::links() const
 {
-   return m_links.values();
+   return m_links;
 }
 
-QList<LineModel *> ERDModel::propertyLines() const
+const QSet<LineModel *> &ERDModel::propertyLines() const
 {
-   return m_propertyLines.values();
+   return m_propertyLines;
 }
 
-QList<LinkLineModel *> ERDModel::linkLines() const
+const QSet<LinkLineModel *> &ERDModel::linkLines() const
 {
-   return m_linkLines.values();
-}
-
-ERDItemModel *ERDModel::getItemById(int id)
-{
-   if (m_entities.contains(id))
-   {
-      return m_entities[id];
-   }
-   else if (m_properties.contains(id))
-   {
-      return m_properties[id];
-   }
-   else if (m_links.contains(id))
-   {
-      return m_links[id];
-   }
-   else if (m_propertyLines.contains(id))
-   {
-      return m_propertyLines[id];
-   }
-   else if (m_linkLines.contains(id))
-   {
-      return m_linkLines[id];
-   }
-   return nullptr;
+   return m_linkLines;
 }

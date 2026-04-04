@@ -16,6 +16,8 @@ public:
    MainWindow(QWidget *parent = nullptr);
    ~MainWindow();
 
+   void keyPressEvent(QKeyEvent *event) override;
+
 private slots:
    void on_actionOpen_triggered();
 

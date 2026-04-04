@@ -9,6 +9,7 @@ CONFIG += c++17
 SOURCES += \
     ERDScene.cpp \
     ERDSceneView.cpp \
+    Managers/IdMapManager.cpp \
     Undo/AddRemoveCommand.cpp \
     Undo/ERDUndoCommand.cpp \
     Holders/NameHolder.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 HEADERS += \
     ERDScene.h \
     ERDSceneView.h \
+    Managers/IdMapManager.h \
     Undo/AddRemoveCommand.h \
     Undo/ERDUndoCommand.h \
     Holders/NameHolder.h \

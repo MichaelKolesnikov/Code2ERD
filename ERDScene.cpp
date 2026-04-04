@@ -1,5 +1,6 @@
 #include "ERDScene.h"
 #include "RestrictedMenu.h"
+#include "Models/ERDModel.h"
 #include "Items/EntityItem.h"
 #include "Items/LinkItem.h"
 #include "Items/PropertyItem.h"
@@ -11,28 +12,7 @@
 void ERDScene::init()
 {
    m_erdModel = new ERDModel();
-   connect(m_erdModel, &ERDModel::added, this, [this](ERDItemModel* itemModel) {
-      if (auto it = qobject_cast<LinkLineModel*>(itemModel))
-      {
-         addItem(new LinkLineItem(it));
-      }
-      else if (auto it = qobject_cast<LineModel*>(itemModel))
-      {
-         addItem(new LineItem(it));
-      }
-      else if (auto it = qobject_cast<LinkModel*>(itemModel))
-      {
-         addItem(new LinkItem(it));
-      }
-      else if (auto it = qobject_cast<PropertyModel*>(itemModel))
-      {
-         addItem(new PropertyItem(it));
-      }
-      else if (auto it = qobject_cast<EntityModel*>(itemModel))
-      {
-         addItem(new EntityItem(it));
-      }
-   });
+   connect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromModel);
    connect(m_erdModel, &ERDModel::removed, this, [this](ERDItemModel* itemModel) {
       for (auto item : items())
       {
@@ -41,6 +21,7 @@ void ERDScene::init()
             if (it->id() == itemModel->id())
             {
                removeItem(it);
+               m_idToBinding.remove(it->id());
                break;
             }
          }
@@ -53,23 +34,23 @@ void ERDScene::loadModel(ERDModel* erdModel)
    clear();
    for (auto model : erdModel->entities())
    {
-      addItem(new EntityItem(model));
+      addErdItemFromModel(model);
    }
    for (auto model : erdModel->links())
    {
-      addItem(new LinkItem(model));
+      addErdItemFromModel(model);
    }
    for (auto model : erdModel->properties())
    {
-      addItem(new PropertyItem(model));
+      addErdItemFromModel(model);
    }
    for (auto model : erdModel->linkLines())
    {
-      addItem(new LinkLineItem(model));
+      addErdItemFromModel(model);
    }
    for (auto model : erdModel->propertyLines())
    {
-      addItem(new LineItem(model));
+      addErdItemFromModel(model);
    }
    m_erdModel = erdModel;
 }
@@ -120,7 +101,7 @@ void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
    }
    else if (selectedAction == removeAction && itemToRemove)
    {
-      emit signalToPushCommand(new AddRemoveCommand(m_erdModel->getItemById(itemToRemove->id()), AddRemoveCommand::Remove, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(m_idToBinding[itemToRemove->id()].erdItemModel, AddRemoveCommand::Remove, m_erdModel));
    }
 }
 
@@ -147,4 +128,38 @@ void ERDScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void ERDScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
 
+}
+
+void ERDScene::addErdItemFromModel(ERDItemModel *itemModel)
+{
+   if (auto it = qobject_cast<LinkLineModel*>(itemModel))
+   {
+      auto item = new LinkLineItem(it);
+      m_idToBinding[itemModel->id()] = {itemModel, item};
+      addItem(item);
+   }
+   else if (auto it = qobject_cast<LineModel*>(itemModel))
+   {
+      auto item = new LineItem(it);
+      m_idToBinding[itemModel->id()] = {itemModel, item};
+      addItem(item);
+   }
+   else if (auto it = qobject_cast<LinkModel*>(itemModel))
+   {
+      auto item = new LinkItem(it);
+      m_idToBinding[itemModel->id()] = {itemModel, item};
+      addItem(item);
+   }
+   else if (auto it = qobject_cast<PropertyModel*>(itemModel))
+   {
+      auto item = new PropertyItem(it);
+      m_idToBinding[itemModel->id()] = {itemModel, item};
+      addItem(item);
+   }
+   else if (auto it = qobject_cast<EntityModel*>(itemModel))
+   {
+      auto item = new EntityItem(it);
+      m_idToBinding[itemModel->id()] = {itemModel, item};
+      addItem(item);
+   }
 }
