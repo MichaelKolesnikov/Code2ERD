@@ -18,6 +18,8 @@ public:
 
    void loadModel(ERDModel* erdModel);
 
+   ERDModel* erdModel();
+
 signals:
    void signalToPushCommand(QUndoCommand*);
 
@@ -36,7 +38,8 @@ private:
       ERDItem* erdItem;
    };
 
-   void addErdItemFromModel(ERDItemModel* itemModel);
+   void addErdItemFromAddedModel(ERDItemModel* itemModel);
+   void removeErdItemFromRemovedModel(ERDItemModel* itemModel);
 
    ERDModel* m_erdModel;
    QMap<QString, Binding> m_idToBinding;

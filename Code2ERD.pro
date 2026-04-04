@@ -9,7 +9,6 @@ CONFIG += c++17
 SOURCES += \
     ERDScene.cpp \
     ERDSceneView.cpp \
-    Managers/IdMapManager.cpp \
     Undo/AddRemoveCommand.cpp \
     Undo/ERDUndoCommand.cpp \
     Holders/NameHolder.cpp \
@@ -37,13 +36,13 @@ SOURCES += \
     Models/LinkModel.cpp \
     Models/PropertyItemModel.cpp \
     RestrictedMenu.cpp \
+    Undo/ReplaceErdModelCommand.cpp \
     main.cpp \
     MainWindow.cpp
 
 HEADERS += \
     ERDScene.h \
     ERDSceneView.h \
-    Managers/IdMapManager.h \
     Undo/AddRemoveCommand.h \
     Undo/ERDUndoCommand.h \
     Holders/NameHolder.h \
@@ -74,7 +73,8 @@ HEADERS += \
     Models/LinkLineModel.h \
     Models/LinkModel.h \
     Models/PropertyModel.h \
-    RestrictedMenu.h
+    RestrictedMenu.h \
+    Undo/ReplaceErdModelCommand.h
 
 FORMS += \
     MainWindow.ui

@@ -13,47 +13,47 @@
 void ERDScene::init()
 {
    m_erdModel = new ERDModel();
-   connect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromModel);
-   connect(m_erdModel, &ERDModel::removed, this, [this](ERDItemModel* itemModel) {
-      for (auto item : items())
-      {
-         if (auto it = qgraphicsitem_cast<ERDItem*>(item))
-         {
-            if (it->id() == itemModel->id())
-            {
-               removeItem(it);
-               m_idToBinding.remove(it->id());
-               break;
-            }
-         }
-      }
-   });
+   loadModel(m_erdModel);
 }
 
 void ERDScene::loadModel(ERDModel* erdModel)
 {
-   clear();
+   for (auto i : m_idToBinding.keys())
+   {
+      removeItem(m_idToBinding[i].erdItem);
+   }
+   m_idToBinding.clear();
+   disconnect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
+   disconnect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
+
+   m_erdModel = erdModel;
+   connect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
+   connect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
    for (auto model : erdModel->entities())
    {
-      addErdItemFromModel(model);
+      addErdItemFromAddedModel(model);
    }
    for (auto model : erdModel->links())
    {
-      addErdItemFromModel(model);
+      addErdItemFromAddedModel(model);
    }
    for (auto model : erdModel->properties())
    {
-      addErdItemFromModel(model);
+      addErdItemFromAddedModel(model);
    }
    for (auto model : erdModel->linkLines())
    {
-      addErdItemFromModel(model);
+      addErdItemFromAddedModel(model);
    }
    for (auto model : erdModel->propertyLines())
    {
-      addErdItemFromModel(model);
+      addErdItemFromAddedModel(model);
    }
-   m_erdModel = erdModel;
+}
+
+ERDModel *ERDScene::erdModel()
+{
+   return m_erdModel;
 }
 
 void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
@@ -131,7 +131,7 @@ void ERDScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 
 }
 
-void ERDScene::addErdItemFromModel(ERDItemModel *itemModel)
+void ERDScene::addErdItemFromAddedModel(ERDItemModel *itemModel)
 {
    if (auto it = qobject_cast<LinkLineModel*>(itemModel))
    {
@@ -163,4 +163,10 @@ void ERDScene::addErdItemFromModel(ERDItemModel *itemModel)
       m_idToBinding[itemModel->id()] = {itemModel, item};
       addItem(item);
    }
+}
+
+void ERDScene::removeErdItemFromRemovedModel(ERDItemModel *itemModel)
+{
+   removeItem(m_idToBinding[itemModel->id()].erdItem);
+   m_idToBinding.remove(itemModel->id());
 }

@@ -17,9 +17,9 @@ LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
 
       QJsonObject connObj = item.toObject();
 
-      if (!connObj.contains(lineIdKey) || !connObj[lineIdKey].isDouble() ||
+      if (!connObj.contains(lineIdKey) || !connObj[lineIdKey].isString() ||
          !connObj.contains(inKey) || !connObj[inKey].isBool() ||
-         !connObj.contains(objIdKey) || !connObj[objIdKey].isDouble() ||
+         !connObj.contains(objIdKey) || !connObj[objIdKey].isString() ||
          !connObj.contains(pointKey) || !connObj[pointKey].isObject())
       {
          return nullptr;

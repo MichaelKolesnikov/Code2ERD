@@ -5,7 +5,7 @@ EntityModel* EntityMapper::fromJson(const QJsonObject &jsonObject)
 {
    bool isValid =
          jsonObject.contains(id) &&
-         jsonObject[id].isDouble() &&
+         jsonObject[id].isString() &&
          jsonObject.contains(name) &&
          jsonObject[name].isString() &&
          jsonObject.contains(position) &&

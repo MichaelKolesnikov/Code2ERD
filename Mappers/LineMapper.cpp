@@ -6,16 +6,14 @@ LineModel* LineMapper::fromJson(const QJsonObject &jsonObject)
 {
    bool isValid =
          jsonObject.contains(id) &&
-         jsonObject[id].isDouble() &&
-         jsonObject.contains(position) &&
-         jsonObject[position].isObject() &&
-         jsonObject.contains(moves) &&
-         jsonObject[moves].isArray();
+         jsonObject[id].isString() &&
+         jsonObject.contains(nodes) &&
+         jsonObject[nodes].isArray();
    if (!isValid)
    {
       return nullptr;
    }
-   auto jsonArray = jsonObject[moves].toArray();
+   auto jsonArray = jsonObject[nodes].toArray();
    QVector<QPointF> lineMoves(jsonArray.size());
    int pos = 0;
    for (auto jsonObj : jsonArray)
@@ -44,8 +42,7 @@ QJsonObject LineMapper::toJson(const LineModel *model)
    return QJsonObject(
       {
          {id, model->id()},
-         {position, jsonArray},
-         {moves, jsonArray}
+         {nodes, jsonArray}
       }
    );
 }

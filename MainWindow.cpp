@@ -3,6 +3,7 @@
 #include "ERDScene.h"
 #include "ERDSceneView.h"
 #include "Mappers/ERDJsonMapper.h"
+#include "Undo/ReplaceErdModelCommand.h"
 
 #include <QFileDialog>
 #include <QDir>
@@ -73,6 +74,7 @@ void MainWindow::on_actionOpen_triggered()
    {
       return;
    }
+   m_undoStack->push(new ReplaceErdModelCommand(m_erdScene->erdModel(), erdModel, m_erdScene));
    m_erdScene->loadModel(erdModel);
 }
 
