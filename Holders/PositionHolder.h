@@ -8,7 +8,7 @@ public:
    explicit PositionHolder(const QPointF&);
 
    QPointF position() const;
-   void setPosition(const QPointF&);
+   virtual void setPosition(const QPointF&);
 
 private:
    QPointF m_position;

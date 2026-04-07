@@ -1,5 +1,5 @@
 #include "LinesConnectionsMapper.h"
-#include "Mappers/PositionMapper.h"
+#include "Mappers/DoublePairMapper.h"
 #include <QJsonArray>
 
 LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
@@ -20,7 +20,7 @@ LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
       if (!connObj.contains(lineIdKey) || !connObj[lineIdKey].isString() ||
          !connObj.contains(inKey) || !connObj[inKey].isBool() ||
          !connObj.contains(objIdKey) || !connObj[objIdKey].isString() ||
-         !connObj.contains(pointKey) || !connObj[pointKey].isObject())
+         !connObj.contains(pointKey) || !connObj[pointKey].isArray())
       {
          return nullptr;
       }
@@ -29,11 +29,11 @@ LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
       bool in = connObj[inKey].toBool();
       auto objId = connObj[objIdKey].toString();
 
-      auto pointOpt = PositionMapper::fromJson(connObj[pointKey].toObject());
+      auto pointOpt = DoublePairMapper::fromJson(connObj[pointKey].toArray());
       if (!pointOpt.has_value())
          return nullptr;
 
-      model->set(lineId, in, objId, pointOpt.value());
+      model->set(lineId, in, objId, {pointOpt.value().first, pointOpt.value().second});
    }
    return model;
 }
@@ -53,7 +53,7 @@ QJsonObject LinesConnectionsMapper::toJson(const LinesConnectionsModel* model)
       connObj[lineIdKey] = lineId;
       connObj[inKey] = true;
       connObj[objIdKey] = objId;
-      connObj[pointKey] = PositionMapper::toJson(point);
+      connObj[pointKey] = DoublePairMapper::toJson(QPair<double, double>(point.x(), point.y()));
 
       connectionsArray.append(connObj);
    }
@@ -69,7 +69,7 @@ QJsonObject LinesConnectionsMapper::toJson(const LinesConnectionsModel* model)
       connObj[lineIdKey] = lineId;
       connObj[inKey] = false;
       connObj[objIdKey] = objId;
-      connObj[pointKey] = PositionMapper::toJson(point);
+      connObj[pointKey] = DoublePairMapper::toJson(QPair<double, double>(point.x(), point.y()));
 
       connectionsArray.append(connObj);
    }

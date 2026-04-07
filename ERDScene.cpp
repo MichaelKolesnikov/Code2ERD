@@ -10,23 +10,26 @@
 #include <QUuid>
 #include <QGraphicsSceneContextMenuEvent>
 
-void ERDScene::init()
-{
-   m_erdModel = new ERDModel();
-   loadModel(m_erdModel);
-}
-
 void ERDScene::loadModel(ERDModel* erdModel)
 {
-   for (auto i : m_idToBinding.keys())
+   if (m_erdModel)
    {
-      removeItem(m_idToBinding[i].erdItem);
+      for (auto i : m_idToBinding.keys())
+      {
+         removeItem(m_idToBinding[i].erdItem);
+      }
+      m_idToBinding.clear();
+      disconnect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
+      disconnect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
    }
-   m_idToBinding.clear();
-   disconnect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
-   disconnect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
 
    m_erdModel = erdModel;
+
+   if (!m_erdModel)
+   {
+      return;
+   }
+
    connect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
    connect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
    for (auto model : erdModel->entities())
@@ -106,11 +109,6 @@ void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
    }
 }
 
-void ERDScene::keyReleaseEvent(QKeyEvent *event)
-{
-
-}
-
 void ERDScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
@@ -122,11 +120,6 @@ void ERDScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 }
 
 void ERDScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-
-}
-
-void ERDScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
 
 }

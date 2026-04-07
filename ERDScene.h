@@ -14,8 +14,6 @@ class ERDScene : public QGraphicsScene
 public:
    using QGraphicsScene::QGraphicsScene;
 
-   void init();
-
    void loadModel(ERDModel* erdModel);
 
    ERDModel* erdModel();
@@ -25,11 +23,9 @@ signals:
 
 protected:
    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
-   virtual void keyReleaseEvent(QKeyEvent *event) override;
    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-   virtual void wheelEvent(QGraphicsSceneWheelEvent *event) override;
 
 private:
    struct Binding
@@ -41,6 +37,6 @@ private:
    void addErdItemFromAddedModel(ERDItemModel* itemModel);
    void removeErdItemFromRemovedModel(ERDItemModel* itemModel);
 
-   ERDModel* m_erdModel;
+   ERDModel* m_erdModel = nullptr;
    QMap<QString, Binding> m_idToBinding;
 };

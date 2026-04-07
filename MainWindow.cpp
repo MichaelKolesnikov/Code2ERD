@@ -10,6 +10,20 @@
 #include <QJsonDocument>
 #include <QUndoStack>
 
+bool saveTextFile(const QString &fileName, const QString &text)
+{
+   QFile file(fileName);
+   if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      return false;
+   }
+
+   QTextStream out(&file);
+   out << text;
+
+   file.close();
+   return true;
+}
+
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent)
    , ui(new Ui::MainWindow)
@@ -19,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
    m_undoStack = new QUndoStack(this);
 
    m_erdScene = new ERDScene(this);
-   m_erdScene->init();
+   m_erdScene->loadModel(new ERDModel());
    ui->graphicsView->init();
    ui->graphicsView->setScene(m_erdScene);
 
@@ -76,5 +90,12 @@ void MainWindow::on_actionOpen_triggered()
    }
    m_undoStack->push(new ReplaceErdModelCommand(m_erdScene->erdModel(), erdModel, m_erdScene));
    m_erdScene->loadModel(erdModel);
+}
+
+void MainWindow::on_actionSave_as_triggered()
+{
+   auto pathToFile = QFileDialog::getSaveFileName(this, "Save", QDir::homePath(), "*.json");
+   auto jsonDoc = QJsonDocument(ERDMapper::toJson(m_erdScene->erdModel()));
+   saveTextFile(pathToFile, QString::fromUtf8(jsonDoc.toJson(QJsonDocument::Indented)));
 }
 

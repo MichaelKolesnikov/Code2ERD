@@ -9,6 +9,7 @@ CONFIG += c++17
 SOURCES += \
     ERDScene.cpp \
     ERDSceneView.cpp \
+    Mappers/DoublePairMapper.cpp \
     Undo/AddRemoveCommand.cpp \
     Undo/ERDUndoCommand.cpp \
     Holders/NameHolder.cpp \
@@ -25,7 +26,6 @@ SOURCES += \
     Mappers/LinesConnectionsMapper.cpp \
     Mappers/LinkLineMapper.cpp \
     Mappers/LinkMapper.cpp \
-    Mappers/PositionMapper.cpp \
     Mappers/PropertyMapper.cpp \
     Models/ERDItemModel.cpp \
     Models/ERDModel.cpp \
@@ -43,6 +43,7 @@ SOURCES += \
 HEADERS += \
     ERDScene.h \
     ERDSceneView.h \
+    Mappers/DoublePairMapper.h \
     Undo/AddRemoveCommand.h \
     Undo/ERDUndoCommand.h \
     Holders/NameHolder.h \
@@ -63,7 +64,6 @@ HEADERS += \
     Mappers/LinesConnectionsMapper.h \
     Mappers/LinkLineMapper.h \
     Mappers/LinkMapper.h \
-    Mappers/PositionMapper.h \
     Mappers/PropertyMapper.h \
     Models/ERDItemModel.h \
     Models/ERDModel.h \

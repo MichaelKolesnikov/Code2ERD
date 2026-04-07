@@ -16,7 +16,7 @@ EntityItem::EntityItem(EntityModel* model) : ERDItem(model), m_model(model)
 
 QRectF EntityItem::boundingRect() const
 {
-   static auto rect = QRectF(-50, -30, 100, 60);
+   QRectF rect(-m_model->size().width() / 2, -m_model->size().height() / 2, m_model->size().width(), m_model->size().height());
    return rect;
 }
 

@@ -125,7 +125,7 @@ QJsonArray f(const QSet<T>& v)
    return array;
 }
 
-QJsonObject ERDMapper::toJson(const ERDModel *erdModel)
+QJsonObject ERDMapper::toJson(const ERDModel* const erdModel)
 {
    QJsonObject answer;
 

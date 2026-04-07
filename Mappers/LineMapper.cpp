@@ -1,5 +1,5 @@
 #include "LineMapper.h"
-#include "PositionMapper.h"
+#include "DoublePairMapper.h"
 #include <QJsonArray>
 
 LineModel* LineMapper::fromJson(const QJsonObject &jsonObject)
@@ -18,16 +18,16 @@ LineModel* LineMapper::fromJson(const QJsonObject &jsonObject)
    int pos = 0;
    for (auto jsonObj : jsonArray)
    {
-      if (!jsonObj.isObject())
+      if (!jsonObj.isArray())
       {
          return nullptr;
       }
-      auto positionOpt = PositionMapper::fromJson(jsonObj.toObject());
+      auto positionOpt = DoublePairMapper::fromJson(jsonObj.toArray());
       if (!positionOpt)
       {
          return nullptr;
       }
-      lineMoves[pos++] = positionOpt.value();
+      lineMoves[pos++] = QPointF(positionOpt.value().first, positionOpt.value().second);
    }
    return new LineModel(jsonObject[id].toString(), lineMoves);
 }
@@ -35,9 +35,10 @@ LineModel* LineMapper::fromJson(const QJsonObject &jsonObject)
 QJsonObject LineMapper::toJson(const LineModel *model)
 {
    QJsonArray jsonArray;
-   for (auto pos : *model)
+   for (auto poss : *model)
    {
-      jsonArray.append(PositionMapper::toJson(pos));
+      auto pos = QPair<double, double>(poss.x(), poss.y());
+      jsonArray.append(DoublePairMapper::toJson(pos));
    }
    return QJsonObject(
       {
