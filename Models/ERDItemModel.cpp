@@ -1,11 +1,7 @@
-#include "ERDItemModel.h"
+#include "Models/ERDItemModel.h"
 
-ERDItemModel::ERDItemModel(QString id) : QObject(), m_id(id)
+ERDItemModel::ERDItemModel(const ERDItemDTO& dto)
+   : m_dto(dto)
 {
-
 }
 
-QString ERDItemModel::id() const
-{
-   return m_id;
-}

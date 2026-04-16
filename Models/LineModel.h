@@ -1,24 +1,38 @@
 #pragma once
 #include "ERDItemModel.h"
-#include <QVector>
-#include <QPointF>
+#include "DTO/LineDTO.h"
 
-Q_DECLARE_METATYPE(QVector<int>)
-
-class LineModel : public ERDItemModel, public QVector<QPointF>
+class LineModel : public ERDItemModel
 {
    Q_OBJECT
+
+   Q_PROPERTY(QString id READ id CONSTANT)
+
    Q_PROPERTY(QVector<QPointF> nodes READ nodes WRITE setNodes NOTIFY nodesChanged)
 
-public:
-   explicit LineModel(QString id, const QVector<QPointF>& points);
 
-   QVector<QPointF> nodes() const;
-   void setNodes(const QVector<QPointF>& points);
+public:
+   explicit LineModel(const LineDTO& dto = LineDTO());
+   ~LineModel() = default;
+
+   const LineDTO& dto() const { return m_dto; }
+
+   // get
+
+   const QString& id() const { return m_dto.id; }
+
+   const QVector<QPointF>& nodes() const { return m_dto.nodes; }
+
+
+   // set
+
+   void setNodes(const QVector<QPointF>& value);
+
 
 signals:
+
    void nodesChanged();
 
 private:
-   QVector<QPointF> m_nodes;
+   LineDTO m_dto;
 };

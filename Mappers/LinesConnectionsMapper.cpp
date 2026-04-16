@@ -1,6 +1,5 @@
 #include "LinesConnectionsMapper.h"
-#include "Mappers/DoublePairMapper.h"
-#include <QJsonArray>
+#include "Mappers/PositionMapper.h"
 
 LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
 {
@@ -13,7 +12,9 @@ LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
    for (const auto& item : connectionsArray)
    {
       if (!item.isObject())
+      {
          return nullptr;
+      }
 
       QJsonObject connObj = item.toObject();
 
@@ -29,11 +30,11 @@ LinesConnectionsModel* LinesConnectionsMapper::fromJson(const QJsonObject& json)
       bool in = connObj[inKey].toBool();
       auto objId = connObj[objIdKey].toString();
 
-      auto pointOpt = DoublePairMapper::fromJson(connObj[pointKey].toArray());
+      auto pointOpt = PositionMapper::fromJson(connObj[pointKey].toArray());
       if (!pointOpt.has_value())
          return nullptr;
 
-      model->set(lineId, in, objId, {pointOpt.value().first, pointOpt.value().second});
+      model->set(lineId, in, objId, pointOpt.value());
    }
    return model;
 }
@@ -53,7 +54,7 @@ QJsonObject LinesConnectionsMapper::toJson(const LinesConnectionsModel* model)
       connObj[lineIdKey] = lineId;
       connObj[inKey] = true;
       connObj[objIdKey] = objId;
-      connObj[pointKey] = DoublePairMapper::toJson(QPair<double, double>(point.x(), point.y()));
+      connObj[pointKey] = PositionMapper::toJson(point);
 
       connectionsArray.append(connObj);
    }
@@ -69,7 +70,7 @@ QJsonObject LinesConnectionsMapper::toJson(const LinesConnectionsModel* model)
       connObj[lineIdKey] = lineId;
       connObj[inKey] = false;
       connObj[objIdKey] = objId;
-      connObj[pointKey] = DoublePairMapper::toJson(QPair<double, double>(point.x(), point.y()));
+      connObj[pointKey] = PositionMapper::toJson(point);
 
       connectionsArray.append(connObj);
    }

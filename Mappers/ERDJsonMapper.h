@@ -9,8 +9,6 @@ public:
    static QJsonObject toJson(const ERDModel* const);
 private:
    inline static QString entities = "entities";
-   inline static QString links = "links";
-   inline static QString properties = "properties";
    inline static QString propertyLines = "propertyLines";
    inline static QString linkLines = "linkLines";
    inline static QString linesConnections = "linesConnections";

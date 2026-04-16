@@ -1,6 +1,6 @@
 #pragma once
-#include "LinkModel.h"
-#include "PropertyModel.h"
+#include "IdNamePositionSizeTypeModel.h"
+#include "LineModel.h"
 #include "LinkLineModel.h"
 #include "LinesConnectionsModel.h"
 #include <QMap>
@@ -13,22 +13,20 @@ public:
    explicit ERDModel();
 
    void add(ERDItemModel*);
-   void add(EntityModel*);
-   void add(PropertyModel*);
-   void add(LinkModel*);
+   void add(IdNamePositionSizeTypeModel*);
    void add(LineModel*);
    void add(LinkLineModel*);
    void set(LinesConnectionsModel*);
    void remove(ERDItemModel*);
-   void remove(EntityModel*);
-   void remove(PropertyModel*);
-   void remove(LinkModel*);
+   void remove(IdNamePositionSizeTypeModel*);
    void remove(LineModel*);
    void remove(LinkLineModel*);
 
-   const QSet<EntityModel*> &entities() const;
-   const QSet<PropertyModel*> &properties() const;
-   const QSet<LinkModel*> &links() const;
+   void add(const IdNamePositionSizeTypeDTO&);
+   void add(const LineDTO&);
+   void add(const LinkLineDTO&);
+
+   const QSet<IdNamePositionSizeTypeModel*> &entities() const;
    const QSet<LineModel*> &propertyLines() const;
    const QSet<LinkLineModel*> &linkLines() const;
 
@@ -47,9 +45,7 @@ signals:
 //   void removed(LineModel*);
 //   void removed(LinkLineModel*);
 private:
-   QSet<EntityModel*> m_entities;
-   QSet<PropertyModel*> m_properties;
-   QSet<LinkModel*> m_links;
+   QSet<IdNamePositionSizeTypeModel*> m_entities;
    QSet<LineModel*> m_propertyLines;
    QSet<LinkLineModel*> m_linkLines;
    LinesConnectionsModel* m_linesConnectionsModel;

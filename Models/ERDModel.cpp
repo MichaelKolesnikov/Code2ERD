@@ -15,35 +15,15 @@ void ERDModel::add(ERDItemModel *itemModel)
    {
       add(it);
    }
-   else if (auto it = qobject_cast<LinkModel*>(itemModel))
-   {
-      add(it);
-   }
-   else if (auto it = qobject_cast<PropertyModel*>(itemModel))
-   {
-      add(it);
-   }
-   else if (auto it = qobject_cast<EntityModel*>(itemModel))
+   else if (auto it = qobject_cast<IdNamePositionSizeTypeModel*>(itemModel))
    {
       add(it);
    }
 }
 
-void ERDModel::add(EntityModel *itemModel)
+void ERDModel::add(IdNamePositionSizeTypeModel *itemModel)
 {
    m_entities.insert(itemModel);
-   emit added(itemModel);
-}
-
-void ERDModel::add(PropertyModel *itemModel)
-{
-   m_properties.insert(itemModel);
-   emit added(itemModel);
-}
-
-void ERDModel::add(LinkModel *itemModel)
-{
-   m_links.insert(itemModel);
    emit added(itemModel);
 }
 
@@ -78,35 +58,15 @@ void ERDModel::remove(ERDItemModel *itemModel)
    {
       remove(it);
    }
-   else if (auto it = qobject_cast<LinkModel*>(itemModel))
-   {
-      remove(it);
-   }
-   else if (auto it = qobject_cast<PropertyModel*>(itemModel))
-   {
-      remove(it);
-   }
-   else if (auto it = qobject_cast<EntityModel*>(itemModel))
+   else if (auto it = qobject_cast<IdNamePositionSizeTypeModel*>(itemModel))
    {
       remove(it);
    }
 }
 
-void ERDModel::remove(EntityModel *itemModel)
+void ERDModel::remove(IdNamePositionSizeTypeModel *itemModel)
 {
    m_entities.remove(itemModel);
-   emit removed(itemModel);
-}
-
-void ERDModel::remove(PropertyModel *itemModel)
-{
-   m_properties.remove(itemModel);
-   emit removed(itemModel);
-}
-
-void ERDModel::remove(LinkModel *itemModel)
-{
-   m_links.remove(itemModel);
    emit removed(itemModel);
 }
 
@@ -122,19 +82,9 @@ void ERDModel::remove(LinkLineModel *itemModel)
    emit removed(itemModel);
 }
 
-const QSet<EntityModel *> &ERDModel::entities() const
+const QSet<IdNamePositionSizeTypeModel *> &ERDModel::entities() const
 {
    return m_entities;
-}
-
-const QSet<PropertyModel *> &ERDModel::properties() const
-{
-   return m_properties;
-}
-
-const QSet<LinkModel *> &ERDModel::links() const
-{
-   return m_links;
 }
 
 const QSet<LineModel *> &ERDModel::propertyLines() const
@@ -145,4 +95,22 @@ const QSet<LineModel *> &ERDModel::propertyLines() const
 const QSet<LinkLineModel *> &ERDModel::linkLines() const
 {
    return m_linkLines;
+}
+
+void ERDModel::add(const IdNamePositionSizeTypeDTO& dto)
+{
+   auto model = new IdNamePositionSizeTypeModel(dto);
+   add(model);
+}
+
+void ERDModel::add(const LineDTO& dto)
+{
+   auto model = new LineModel(dto);
+   add(model);
+}
+
+void ERDModel::add(const LinkLineDTO& dto)
+{
+   auto model = new LinkLineModel(dto);
+   add(model);
 }

@@ -1,20 +1,15 @@
-#include "LineModel.h"
+#include "Models/LineModel.h"
 
-LineModel::LineModel(QString id, const QVector<QPointF>& moves)
-   : ERDItemModel(id)
-   , QVector<QPointF>(moves)
+LineModel::LineModel(const LineDTO& dto)
+   : ERDItemModel(dto), m_dto(dto)
 {
-
 }
 
-QVector<QPointF> LineModel::nodes() const
-{
-   return m_nodes;
-}
 
-void LineModel::setNodes(const QVector<QPointF>& points)
+void LineModel::setNodes(const QVector<QPointF>& value)
 {
-   if (m_nodes == points) return;
-   m_nodes = points;
+   if (m_dto.nodes == value) return;
+   m_dto.nodes = value;
    emit nodesChanged();
+   emit dtoChanged();
 }

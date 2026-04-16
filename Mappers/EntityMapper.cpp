@@ -1,9 +1,10 @@
 #include "EntityMapper.h"
-#include "DoublePairMapper.h"
-#include "QJsonArray"
+#include "PositionMapper.h"
+#include "SizeMapper.h"
 
-EntityModel* EntityMapper::fromJson(const QJsonObject &jsonObject)
+std::optional<IdNamePositionSizeTypeDTO> EntityMapper::fromJson(const QJsonObject &jsonObject)
 {
+   auto nullValue = std::nullopt;
    bool isValid =
          jsonObject.contains(id) &&
          jsonObject[id].isString() &&
@@ -12,36 +13,41 @@ EntityModel* EntityMapper::fromJson(const QJsonObject &jsonObject)
          jsonObject.contains(position) &&
          jsonObject[position].isArray() &&
          jsonObject.contains(size) &&
-         jsonObject[size].isArray();
+         jsonObject[size].isArray() &&
+         jsonObject.contains(type) &&
+         jsonObject[type].isDouble();
    if (!isValid)
    {
-      return nullptr;
+      return nullValue;
    }
-   auto p_ = DoublePairMapper::fromJson(jsonObject[position].toArray());
+   auto p_ = PositionMapper::fromJson(jsonObject[position].toArray());
    if (!p_.has_value())
    {
-      return nullptr;
+      return nullValue;
    }
-   auto siz_ = DoublePairMapper::fromJson(jsonObject[size].toArray());
+   auto siz_ = SizeMapper::fromJson(jsonObject[size].toArray());
    if (!siz_.has_value())
    {
-      return nullptr;
+      return nullValue;
    }
-   auto p = p_.value();
-   auto siz = siz_.value();
-   return new EntityModel(jsonObject[id].toString(), jsonObject[name].toString(), {p.first, p.second}, QSize(siz.first, siz.second));
+   int typeInt = jsonObject[type].toDouble();
+   if (typeInt < 0 || typeInt > 2)
+   {
+      typeInt = 0;
+   }
+   auto type = static_cast<IdNamePositionSizeTypeDTO::Type >(typeInt);
+   return IdNamePositionSizeTypeDTO {{jsonObject[id].toString()}, jsonObject[name].toString(), p_.value(), siz_.value(), type};
 }
 
-QJsonObject EntityMapper::toJson(const EntityModel *model)
+QJsonObject EntityMapper::toJson(const IdNamePositionSizeTypeDTO& dto)
 {
-   auto pos = QPair<double, double>(model->position().x(), model->position().y());
-   auto siz = QPair<double, double>(model->size().width(), model->size().height());
    return QJsonObject(
       {
-         {id, model->id()},
-         {name, model->name()},
-         {position, DoublePairMapper::toJson(pos)},
-         {size, DoublePairMapper::toJson(siz)}
+         {id, dto.id},
+         {name, dto.name},
+         {position, PositionMapper::toJson(dto.position)},
+         {size, SizeMapper::toJson(dto.size)},
+         {type, (int)dto.type}
       }
    );
 }

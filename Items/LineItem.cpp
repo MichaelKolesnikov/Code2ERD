@@ -41,5 +41,5 @@ QPainterPath LineItem::painterPath() const
 
 QVector<QPointF> LineItem::nodes() const
 {
-   return *m_model;
+   return m_model->nodes();
 }

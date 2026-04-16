@@ -9,7 +9,12 @@ CONFIG += c++17
 SOURCES += \
     ERDScene.cpp \
     ERDSceneView.cpp \
+    Items/AnchorItem.cpp \
+    Items/SelectionGroupItem.cpp \
     Mappers/DoublePairMapper.cpp \
+    Mappers/PositionMapper.cpp \
+    Mappers/SizeMapper.cpp \
+    Models/IdNamePositionSizeTypeModel.cpp \
     Undo/AddRemoveCommand.cpp \
     Undo/ERDUndoCommand.cpp \
     Holders/NameHolder.cpp \
@@ -17,33 +22,36 @@ SOURCES += \
     Items/ERDItem.cpp \
     Items/EntityItem.cpp \
     Items/LineItem.cpp \
-    Items/LinkItem.cpp \
     Items/LinkLineItem.cpp \
-    Items/PropertyItem.cpp \
     Mappers/ERDJsonMapper.cpp \
     Mappers/EntityMapper.cpp \
     Mappers/LineMapper.cpp \
     Mappers/LinesConnectionsMapper.cpp \
     Mappers/LinkLineMapper.cpp \
-    Mappers/LinkMapper.cpp \
-    Mappers/PropertyMapper.cpp \
     Models/ERDItemModel.cpp \
     Models/ERDModel.cpp \
-    Models/EntityModel.cpp \
     Models/LineModel.cpp \
     Models/LinesConnectionsModel.cpp \
     Models/LinkLineModel.cpp \
-    Models/LinkModel.cpp \
-    Models/PropertyItemModel.cpp \
     RestrictedMenu.cpp \
     Undo/ReplaceErdModelCommand.cpp \
     main.cpp \
     MainWindow.cpp
 
 HEADERS += \
+    DTO/ERDItemDTO.h \
+    DTO/IdNamePositionSizeTypeDTO.h \
+    DTO/LineDTO.h \
+    DTO/LinkLineDTO.h \
     ERDScene.h \
     ERDSceneView.h \
+    Items/AnchorItem.h \
+    Items/IRectHolder.h \
+    Items/SelectionGroupItem.h \
     Mappers/DoublePairMapper.h \
+    Mappers/PositionMapper.h \
+    Mappers/SizeMapper.h \
+    Models/IdNamePositionSizeTypeModel.h \
     Undo/AddRemoveCommand.h \
     Undo/ERDUndoCommand.h \
     Holders/NameHolder.h \
@@ -53,9 +61,7 @@ HEADERS += \
     Items/ERDItemType.h \
     Items/EntityItem.h \
     Items/LineItem.h \
-    Items/LinkItem.h \
     Items/LinkLineItem.h \
-    Items/PropertyItem.h \
     Items/ZValue.h \
     MainWindow.h \
     Mappers/ERDJsonMapper.h \
@@ -63,18 +69,13 @@ HEADERS += \
     Mappers/LineMapper.h \
     Mappers/LinesConnectionsMapper.h \
     Mappers/LinkLineMapper.h \
-    Mappers/LinkMapper.h \
-    Mappers/PropertyMapper.h \
     Models/ERDItemModel.h \
     Models/ERDModel.h \
-    Models/EntityModel.h \
     Models/LineModel.h \
     Models/LinesConnectionsModel.h \
     Models/LinkLineModel.h \
-    Models/LinkModel.h \
-    Models/PropertyModel.h \
     RestrictedMenu.h \
-    Undo/ReplaceErdModelCommand.h
+    Undo/ReplaceErdModelCommand.h \
 
 FORMS += \
     MainWindow.ui

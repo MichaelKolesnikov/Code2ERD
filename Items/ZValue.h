@@ -3,5 +3,6 @@
 enum ZValue
 {
    ERDItemZValue,
+   SelectionGroupItemZValue,
    AnchorItemZValue
 };

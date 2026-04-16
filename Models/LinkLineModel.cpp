@@ -1,33 +1,22 @@
-#include "LinkLineModel.h"
+#include "Models/LinkLineModel.h"
 
-LinkLineModel::LinkLineModel(QString id, const QVector<QPointF> &moves, const QString &minCardinality, const QString &maxCardinality)
-   : LineModel(id, moves)
-   , m_minCardinality(minCardinality)
-   , m_maxCardinality(maxCardinality)
+LinkLineModel::LinkLineModel(const LinkLineDTO& dto)
+   : m_dto(dto)
 {
-
 }
 
-const QString &LinkLineModel::minCardinality() const
+void LinkLineModel::setMinCardinality(const QString& value)
 {
-   return m_minCardinality;
-}
-
-void LinkLineModel::setMinCardinality(const QString &newMinCardinality)
-{
-   if (m_minCardinality == newMinCardinality) return;
-   m_minCardinality = newMinCardinality;
+   if (m_dto.minCardinality == value) return;
+   m_dto.minCardinality = value;
    emit minCardinalityChanged();
+   emit dtoChanged();
 }
 
-const QString &LinkLineModel::maxCardinality() const
+void LinkLineModel::setMaxCardinality(const QString& value)
 {
-   return m_maxCardinality;
-}
-
-void LinkLineModel::setMaxCardinality(const QString &newMaxCardinality)
-{
-   if (m_maxCardinality == newMaxCardinality) return;
-   m_maxCardinality = newMaxCardinality;
+   if (m_dto.maxCardinality == value) return;
+   m_dto.maxCardinality = value;
    emit maxCardinalityChanged();
+   emit dtoChanged();
 }

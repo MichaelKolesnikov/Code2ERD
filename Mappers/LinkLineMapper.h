@@ -1,13 +1,13 @@
 #pragma once
-#include "Models/LinkLineModel.h"
+#include "DTO/LinkLineDTO.h"
 #include <QJsonObject>
 #include <optional>
 
 class LinkLineMapper
 {
 public:
-   static LinkLineModel* fromJson(const QJsonObject&);
-   static QJsonObject toJson(const LinkLineModel*);
+   static std::optional<LinkLineDTO> fromJson(const QJsonObject&);
+   static QJsonObject toJson(const LinkLineDTO&);
 
 private:
    inline static QString minCardinality = "minCardinality";

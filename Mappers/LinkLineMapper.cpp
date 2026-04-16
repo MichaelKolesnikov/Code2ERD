@@ -1,40 +1,41 @@
 #include "LinkLineMapper.h"
 #include "LineMapper.h"
 
-LinkLineModel* LinkLineMapper::fromJson(const QJsonObject &jsonObject)
+std::optional<LinkLineDTO> LinkLineMapper::fromJson(const QJsonObject &jsonObject)
 {
+   auto nullValue = std::nullopt;
    auto lineOpt = LineMapper::fromJson(jsonObject);
    if (!lineOpt)
    {
-      return nullptr;
+      return nullValue;
    }
-   auto lineModel = lineOpt;
+   auto lineDTO = lineOpt.value();
    bool isValid =
       jsonObject.contains(minCardinality) &&
       jsonObject[minCardinality].isString();
    if (!isValid)
    {
-      return nullptr;
+      return nullValue;
    }
    isValid =
       jsonObject.contains(maxCardinality) &&
       jsonObject[maxCardinality].isString();
    if (!isValid)
    {
-      return nullptr;
+      return nullValue;
    }
-   return new LinkLineModel(
-      lineModel->id(),
-      *lineModel,
+   return LinkLineDTO {
+      lineDTO.id,
+      lineDTO.nodes,
       jsonObject[minCardinality].toString(),
       jsonObject[maxCardinality].toString()
-   );
+   };
 }
 
-QJsonObject LinkLineMapper::toJson(const LinkLineModel *model)
+QJsonObject LinkLineMapper::toJson(const LinkLineDTO& dto)
 {
-   auto jsonObject = LineMapper::toJson(model);
-   jsonObject[minCardinality] = model->minCardinality();
-   jsonObject[maxCardinality] = model->maxCardinality();
+   auto jsonObject = LineMapper::toJson({dto.id, dto.nodes});
+   jsonObject[minCardinality] = dto.minCardinality;
+   jsonObject[maxCardinality] = dto.maxCardinality;
    return jsonObject;
 }

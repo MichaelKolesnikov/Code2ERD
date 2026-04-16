@@ -20,6 +20,9 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+      <property name="handleWidth">
+       <number>12</number>
+      </property>
       <widget class="QPlainTextEdit" name="plainTextEdit"/>
       <widget class="ERDSceneView" name="graphicsView"/>
      </widget>

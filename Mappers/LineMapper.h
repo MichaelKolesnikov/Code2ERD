@@ -1,13 +1,13 @@
 #pragma once
-#include "Models/LineModel.h"
+#include "DTO/LineDTO.h"
 #include <QJsonObject>
 #include <optional>
 
 class LineMapper
 {
 public:
-   static LineModel* fromJson(const QJsonObject&);
-   static QJsonObject toJson(const LineModel*);
+   static std::optional<LineDTO> fromJson(const QJsonObject&);
+   static QJsonObject toJson(const LineDTO&);
 private:
    inline static QString id = "id";
    inline static QString nodes = "nodes";

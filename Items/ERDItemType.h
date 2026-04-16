@@ -6,5 +6,7 @@ enum ERDItemType
    LinkItemType,
    PropertyItemType,
    PropertyLineItemType,
-   LinkLineItemType
+   LinkLineItemType,
+   AnchorItemType,
+   SelectionGroupItemType
 };

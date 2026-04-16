@@ -2,8 +2,6 @@
 #include "RestrictedMenu.h"
 #include "Models/ERDModel.h"
 #include "Items/EntityItem.h"
-#include "Items/LinkItem.h"
-#include "Items/PropertyItem.h"
 #include "Items/LinkLineItem.h"
 #include "Undo/AddRemoveCommand.h"
 
@@ -33,14 +31,6 @@ void ERDScene::loadModel(ERDModel* erdModel)
    connect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
    connect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
    for (auto model : erdModel->entities())
-   {
-      addErdItemFromAddedModel(model);
-   }
-   for (auto model : erdModel->links())
-   {
-      addErdItemFromAddedModel(model);
-   }
-   for (auto model : erdModel->properties())
    {
       addErdItemFromAddedModel(model);
    }
@@ -91,17 +81,18 @@ void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
       return;
    }
 
+   QSizeF size(50, 30);
    if (selectedAction == addEntityAction)
    {
-      emit signalToPushCommand(new AddRemoveCommand(new EntityModel(QUuid::createUuid().toString(), "Entity", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(new IdNamePositionSizeTypeModel({{QUuid::createUuid().toString()}, "Entity", event->scenePos(), size, IdNamePositionSizeTypeDTO::Entity}), AddRemoveCommand::Add, m_erdModel));
    }
    else if (selectedAction == addLinkAction)
    {
-      emit signalToPushCommand(new AddRemoveCommand(new LinkModel(QUuid::createUuid().toString(), "Link", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(new IdNamePositionSizeTypeModel({{QUuid::createUuid().toString()}, "Link", event->scenePos(), size, IdNamePositionSizeTypeDTO::Link}), AddRemoveCommand::Add, m_erdModel));
    }
    else if (selectedAction == addPropertyAction)
    {
-      emit signalToPushCommand(new AddRemoveCommand(new PropertyModel(QUuid::createUuid().toString(), "Property", event->scenePos()), AddRemoveCommand::Add, m_erdModel));
+      emit signalToPushCommand(new AddRemoveCommand(new IdNamePositionSizeTypeModel({{QUuid::createUuid().toString()}, "Property", event->scenePos(), size, IdNamePositionSizeTypeDTO::Property}), AddRemoveCommand::Add, m_erdModel));
    }
    else if (selectedAction == removeAction && itemToRemove)
    {
@@ -138,19 +129,7 @@ void ERDScene::addErdItemFromAddedModel(ERDItemModel *itemModel)
       m_idToBinding[itemModel->id()] = {itemModel, item};
       addItem(item);
    }
-   else if (auto it = qobject_cast<LinkModel*>(itemModel))
-   {
-      auto item = new LinkItem(it);
-      m_idToBinding[itemModel->id()] = {itemModel, item};
-      addItem(item);
-   }
-   else if (auto it = qobject_cast<PropertyModel*>(itemModel))
-   {
-      auto item = new PropertyItem(it);
-      m_idToBinding[itemModel->id()] = {itemModel, item};
-      addItem(item);
-   }
-   else if (auto it = qobject_cast<EntityModel*>(itemModel))
+   else if (auto it = qobject_cast<IdNamePositionSizeTypeModel*>(itemModel))
    {
       auto item = new EntityItem(it);
       m_idToBinding[itemModel->id()] = {itemModel, item};
