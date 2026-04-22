@@ -2,10 +2,16 @@
 #include "Tools/Tool.h"
 
 #include "RestrictedMenu.h"
+
 #include "Models/ERDModel.h"
+
 #include "Items/EntityItem.h"
 #include "Items/LinkLineItem.h"
+#include "Items/AnchorItem.h"
+#include "Items/SelectionGroupItem.h"
+
 #include "Undo/AddRemoveCommand.h"
+
 #include <QUuid>
 #include <QGraphicsSceneContextMenuEvent>
 
@@ -127,7 +133,58 @@ void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-   m_tool->mousePressEvent(event);
+   if (event->button() & Qt::RightButton)
+   {
+      return;
+   }
+   auto currentClampedItem = itemAt(event->scenePos(), QTransform());
+   if (!currentClampedItem)
+   {
+      m_tool->mousePressEvent(event);
+      return;
+   }
+
+   if (auto lineItem = qgraphicsitem_cast<LineItem*>(currentClampedItem))
+   {
+      // m_selectedLineManager->selectLineItem(lineItem);
+   }
+   else if (!selectedItems().empty() && (m_anchor = qgraphicsitem_cast<AnchorItem*>(currentClampedItem)))
+   {
+//      if (m_selectedLineManager->hasLine())
+//      {
+//         m_selectedLineManager->prepareForAnchorMoving(m_anchor);
+//         event->accept();
+//      }
+//      else
+//      {
+//         m_workWithSelectionGroupItem = true;
+//         m_selectionGroupManager->prepareForResizing(m_anchor, event->scenePos());
+//         event->accept();
+//      }
+   }
+   else if (currentClampedItem->type() == EntityItem::Type)
+   {
+//      m_selectedLineManager->removeLineItemSelection();
+//      if (!(event->modifiers() & Qt::ControlModifier))
+//      {
+//         clearSelection();
+//      }
+//      currentClampedItem->setSelected(true);
+//      m_selectionGroupManager->updateSelectionGroup();
+//      m_selectionGroupManager->prepareForMoving(event->scenePos());
+//      m_workWithSelectionGroupItem = true;
+   }
+   else if (currentClampedItem->type() == SelectionGroupItem::Type)
+   {
+      // m_workWithSelectionGroupItem = true;
+      // m_selectionGroupManager->prepareForMoving(event->scenePos());
+   }
+   else
+   {
+      clearSelection();
+      // m_selectionGroupManager->updateSelectionGroup();
+      m_tool->mousePressEvent(event);
+   }
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

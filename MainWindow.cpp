@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
    ui->setupUi(this);
 
    m_undoStack = new QUndoStack(this);
+   ui->undoView->setStack(m_undoStack);
 
    m_scene = new Scene(this);
    m_scene->loadModel(new ERDModel());

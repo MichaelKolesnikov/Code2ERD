@@ -32,18 +32,9 @@ public:
 
 signals:
    void added(ERDItemModel*);
-//   void added(EntityModel*);
-//   void added(PropertyModel*);
-//   void added(LinkModel*);
-//   void added(LineModel*);
-//   void added(LinkLineModel*);
    void seted(LinesConnectionsModel*);
    void removed(ERDItemModel*);
-//   void removed(EntityModel*);
-//   void removed(PropertyModel*);
-//   void removed(LinkModel*);
-//   void removed(LineModel*);
-//   void removed(LinkLineModel*);
+
 private:
    QSet<IdNamePositionSizeTypeModel*> m_entities;
    QSet<LineModel*> m_propertyLines;

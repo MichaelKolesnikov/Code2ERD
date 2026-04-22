@@ -3,8 +3,6 @@
 enum ERDItemType
 {
    EntityItemType,
-   LinkItemType,
-   PropertyItemType,
    PropertyLineItemType,
    LinkLineItemType,
    AnchorItemType,

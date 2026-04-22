@@ -6,6 +6,7 @@ class QUndoCommand;
 class ERDItemModel;
 class ERDModel;
 class ERDItem;
+class AnchorItem;
 class Tool;
 
 class Scene : public QGraphicsScene
@@ -58,4 +59,6 @@ private:
 
    ERDModel* m_erdModel = nullptr;
    QMap<QString, Binding> m_idToBinding;
+
+   AnchorItem* m_anchor;
 };

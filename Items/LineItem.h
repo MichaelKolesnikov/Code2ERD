@@ -6,6 +6,10 @@ class LineItem : public ERDItem
 {
    Q_OBJECT
 public:
+   enum { Type = UserType + ERDItemType::PropertyLineItemType };
+
+   int type() const override;
+
    explicit LineItem(LineModel*);
 
    virtual QRectF boundingRect() const override;
@@ -14,7 +18,7 @@ public:
 
    QPainterPath painterPath() const;
 
-   QVector<QPointF> nodes() const;
+   const QVector<QPointF>& nodes() const;
 
 private:
    LineModel* m_model;

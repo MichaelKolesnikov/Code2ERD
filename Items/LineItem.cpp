@@ -4,6 +4,11 @@
 #include <QPen>
 #include <QPainter>
 
+int LineItem::type() const
+{
+   return Type;
+}
+
 LineItem::LineItem(LineModel *model) : ERDItem(model), m_model(model)
 {
    connect(m_model, &LineModel::propertyChanged, [this](const char*)
@@ -35,17 +40,19 @@ QPainterPath LineItem::shape() const
 
 QPainterPath LineItem::painterPath() const
 {
-   auto curNodes = nodes();
-   QPainterPath painterPath(curNodes[0]);
-
-   for (int i = 1; i < curNodes.size(); ++i)
+   if (nodes().size() == 0)
    {
-      painterPath.lineTo(curNodes[i]);
+      return QPainterPath();
+   }
+   QPainterPath painterPath(nodes()[0]);
+   for (int i = 1; i < nodes().size(); ++i)
+   {
+      painterPath.lineTo(nodes()[i]);
    }
    return painterPath;
 }
 
-QVector<QPointF> LineItem::nodes() const
+const QVector<QPointF>& LineItem::nodes() const
 {
    return m_model->nodes();
 }

@@ -14,7 +14,6 @@ SelectionTool::SelectionTool(Scene *diagramScene)
 
 SelectionTool::~SelectionTool()
 {
-   delete m_selectionGroupItem;
 }
 
 void SelectionTool::activated()
