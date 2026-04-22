@@ -12,9 +12,7 @@ EntityItem::EntityItem(IdNamePositionSizeTypeModel* model) : ERDItem(model), m_m
    connect(this, &EntityItem::xChanged, this, [this](){ m_model->setPosition(pos()); });
    connect(this, &EntityItem::yChanged, this, [this](){ m_model->setPosition(pos()); });
 
-   connect(model, &IdNamePositionSizeTypeModel::nameChanged, [this]() {update();});
-   connect(model, &IdNamePositionSizeTypeModel::positionChanged, [this]() {update();});
-   connect(model, &IdNamePositionSizeTypeModel::sizeChanged, [this]() {prepareGeometryChange(); update();});
+   connect(model, &IdNamePositionSizeTypeModel::propertyChanged, [this](const char*) {prepareGeometryChange(); update();});
 }
 
 QRectF EntityItem::boundingRect() const

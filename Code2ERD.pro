@@ -7,16 +7,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    ERDScene.cpp \
-    ERDSceneView.cpp \
     Items/AnchorItem.cpp \
     Items/SelectionGroupItem.cpp \
+    Managers/LineGeometryManager.cpp \
     Mappers/DoublePairMapper.cpp \
     Mappers/PositionMapper.cpp \
     Mappers/SizeMapper.cpp \
     Models/IdNamePositionSizeTypeModel.cpp \
+    Scene.cpp \
+    SceneView.cpp \
+    Tools/NewLineDrawerTool.cpp \
+    Tools/SelectionTool.cpp \
+    Tools/Tool.cpp \
     Undo/AddRemoveCommand.cpp \
-    Undo/ERDUndoCommand.cpp \
     Holders/NameHolder.cpp \
     Holders/PositionHolder.cpp \
     Items/ERDItem.cpp \
@@ -35,6 +38,7 @@ SOURCES += \
     Models/LinkLineModel.cpp \
     RestrictedMenu.cpp \
     Undo/ReplaceErdModelCommand.cpp \
+    Undo/UndoCommand.cpp \
     main.cpp \
     MainWindow.cpp
 
@@ -43,17 +47,20 @@ HEADERS += \
     DTO/IdNamePositionSizeTypeDTO.h \
     DTO/LineDTO.h \
     DTO/LinkLineDTO.h \
-    ERDScene.h \
-    ERDSceneView.h \
     Items/AnchorItem.h \
     Items/IRectHolder.h \
     Items/SelectionGroupItem.h \
+    Managers/LineGeometryManager.h \
     Mappers/DoublePairMapper.h \
     Mappers/PositionMapper.h \
     Mappers/SizeMapper.h \
     Models/IdNamePositionSizeTypeModel.h \
+    Scene.h \
+    SceneView.h \
+    Tools/NewLineDrawerTool.h \
+    Tools/SelectionTool.h \
+    Tools/Tool.h \
     Undo/AddRemoveCommand.h \
-    Undo/ERDUndoCommand.h \
     Holders/NameHolder.h \
     Holders/PositionHolder.h \
     Interfaces/IERDItem.h \
@@ -76,6 +83,7 @@ HEADERS += \
     Models/LinkLineModel.h \
     RestrictedMenu.h \
     Undo/ReplaceErdModelCommand.h \
+    Undo/UndoCommand.h
 
 FORMS += \
     MainWindow.ui

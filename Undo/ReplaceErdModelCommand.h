@@ -1,13 +1,13 @@
 #pragma once
-#include "ERDUndoCommand.h"
+#include "UndoCommand.h"
 
 class ERDModel;
-class ERDScene;
+class Scene;
 
-class ReplaceErdModelCommand : public ERDUndoCommand
+class ReplaceErdModelCommand : public UndoCommand
 {
 public:
-   ReplaceErdModelCommand(ERDModel* m_oldErdModel, ERDModel* newErdModel, ERDScene* erdScene, QUndoCommand* parent = nullptr);
+   ReplaceErdModelCommand(ERDModel* m_oldErdModel, ERDModel* newErdModel, Scene* erdScene, QUndoCommand* parent = nullptr);
    ~ReplaceErdModelCommand();
 
    virtual void undo() override;
@@ -16,7 +16,7 @@ public:
 private:
    ERDModel* m_oldErdModel;
    ERDModel* m_newErdModel;
-   ERDScene* m_erdScene;
+   Scene* m_erdScene;
    bool m_oldIsCur;
 };
 

@@ -1,10 +1,10 @@
 #pragma once
-#include "ERDUndoCommand.h"
+#include "UndoCommand.h"
 
 class ERDItemModel;
 class ERDModel;
 
-class AddRemoveCommand : public ERDUndoCommand
+class AddRemoveCommand : public UndoCommand
 {
 public:
    enum Operation {Add, Remove};

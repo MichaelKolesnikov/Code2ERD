@@ -1,9 +1,9 @@
 #include "ReplaceErdModelCommand.h"
 #include "Models/ERDModel.h"
-#include "ERDScene.h"
+#include "Scene.h"
 
-ReplaceErdModelCommand::ReplaceErdModelCommand(ERDModel* oldErdModel, ERDModel *newErdModel, ERDScene *erdScene, QUndoCommand *parent)
-   : ERDUndoCommand("ReplaceErdModel", parent), m_oldErdModel(oldErdModel), m_newErdModel(newErdModel), m_erdScene(erdScene), m_oldIsCur(true)
+ReplaceErdModelCommand::ReplaceErdModelCommand(ERDModel* oldErdModel, ERDModel *newErdModel, Scene *erdScene, QUndoCommand *parent)
+   : UndoCommand("ReplaceErdModel", parent), m_oldErdModel(oldErdModel), m_newErdModel(newErdModel), m_erdScene(erdScene), m_oldIsCur(true)
 {
 
 }

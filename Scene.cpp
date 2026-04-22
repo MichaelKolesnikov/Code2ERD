@@ -1,14 +1,15 @@
-#include "ERDScene.h"
+#include "Scene.h"
+#include "Tools/Tool.h"
+
 #include "RestrictedMenu.h"
 #include "Models/ERDModel.h"
 #include "Items/EntityItem.h"
 #include "Items/LinkLineItem.h"
 #include "Undo/AddRemoveCommand.h"
-
 #include <QUuid>
 #include <QGraphicsSceneContextMenuEvent>
 
-void ERDScene::loadModel(ERDModel* erdModel)
+void Scene::loadModel(ERDModel* erdModel)
 {
    if (m_erdModel)
    {
@@ -17,8 +18,8 @@ void ERDScene::loadModel(ERDModel* erdModel)
          removeItem(m_idToBinding[i].erdItem);
       }
       m_idToBinding.clear();
-      disconnect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
-      disconnect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
+      disconnect(m_erdModel, &ERDModel::added, this, &Scene::addErdItemFromAddedModel);
+      disconnect(m_erdModel, &ERDModel::removed, this, &Scene::removeErdItemFromRemovedModel);
    }
 
    m_erdModel = erdModel;
@@ -28,8 +29,8 @@ void ERDScene::loadModel(ERDModel* erdModel)
       return;
    }
 
-   connect(m_erdModel, &ERDModel::added, this, &ERDScene::addErdItemFromAddedModel);
-   connect(m_erdModel, &ERDModel::removed, this, &ERDScene::removeErdItemFromRemovedModel);
+   connect(m_erdModel, &ERDModel::added, this, &Scene::addErdItemFromAddedModel);
+   connect(m_erdModel, &ERDModel::removed, this, &Scene::removeErdItemFromRemovedModel);
    for (auto model : erdModel->entities())
    {
       addErdItemFromAddedModel(model);
@@ -44,12 +45,36 @@ void ERDScene::loadModel(ERDModel* erdModel)
    }
 }
 
-ERDModel *ERDScene::erdModel()
+ERDModel *Scene::erdModel()
 {
    return m_erdModel;
 }
 
-void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+void Scene::pushCommand(QUndoCommand *cmd)
+{
+   emit signalToPushCommand(cmd);
+}
+
+const Tool *Scene::currentTool() const
+{
+   return m_tool;
+}
+
+void Scene::setTool(Tool *tool)
+{
+   if (m_tool == tool)
+   {
+      return;
+   }
+   if (m_tool)
+   {
+      m_tool->deactivated();
+   }
+   m_tool = tool;
+   m_tool->activated();
+}
+
+void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
    RestrictedMenu menu;
 
@@ -100,22 +125,22 @@ void ERDScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
    }
 }
 
-void ERDScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
+   m_tool->mousePressEvent(event);
 }
 
-void ERDScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-
+   m_tool->mouseMoveEvent(event);
 }
 
-void ERDScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-
+   m_tool->mouseReleaseEvent(event);
 }
 
-void ERDScene::addErdItemFromAddedModel(ERDItemModel *itemModel)
+void Scene::addErdItemFromAddedModel(ERDItemModel *itemModel)
 {
    if (auto it = qobject_cast<LinkLineModel*>(itemModel))
    {
@@ -137,8 +162,42 @@ void ERDScene::addErdItemFromAddedModel(ERDItemModel *itemModel)
    }
 }
 
-void ERDScene::removeErdItemFromRemovedModel(ERDItemModel *itemModel)
+void Scene::removeErdItemFromRemovedModel(ERDItemModel *itemModel)
 {
    removeItem(m_idToBinding[itemModel->id()].erdItem);
    m_idToBinding.remove(itemModel->id());
+}
+
+// base
+void Scene::baseContextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+   QGraphicsScene::contextMenuEvent(event);
+}
+void Scene::baseKeyPressEvent(QKeyEvent *event)
+{
+   QGraphicsScene::keyPressEvent(event);
+}
+void Scene::baseKeyReleaseEvent(QKeyEvent *event)
+{
+   QGraphicsScene::keyReleaseEvent(event);
+}
+void Scene::baseMousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+   QGraphicsScene::mousePressEvent(event);
+}
+void Scene::baseMouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+   QGraphicsScene::mouseMoveEvent(event);
+}
+void Scene::baseMouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+   QGraphicsScene::mouseReleaseEvent(event);
+}
+void Scene::baseMouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+   QGraphicsScene::mouseDoubleClickEvent(event);
+}
+void Scene::baseWheelEvent(QGraphicsSceneWheelEvent *event)
+{
+   QGraphicsScene::wheelEvent(event);
 }

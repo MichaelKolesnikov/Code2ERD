@@ -18,8 +18,7 @@ public:
    const QString& id() const { return m_dto.id; }
 
 signals:
-
-   void dtoChanged();
+   void propertyChanged(const char*);
 
 private:
    ERDItemDTO m_dto;

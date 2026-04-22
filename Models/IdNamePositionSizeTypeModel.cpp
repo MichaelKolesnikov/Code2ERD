@@ -10,22 +10,19 @@ void IdNamePositionSizeTypeModel::setName(const QString& value)
 {
    if (m_dto.name == value) return;
    m_dto.name = value;
-   emit nameChanged();
-   emit dtoChanged();
+   emit propertyChanged("name");
 }
 
 void IdNamePositionSizeTypeModel::setPosition(const QPointF& value)
 {
    if (m_dto.position == value) return;
    m_dto.position = value;
-   emit positionChanged();
-   emit dtoChanged();
+   emit propertyChanged("position");
 }
 
 void IdNamePositionSizeTypeModel::setSize(const QSizeF& value)
 {
    if (m_dto.size == value) return;
    m_dto.size = value;
-   emit sizeChanged();
-   emit dtoChanged();
+   emit propertyChanged("size");
 }

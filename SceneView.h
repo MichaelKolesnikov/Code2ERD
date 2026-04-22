@@ -1,7 +1,7 @@
 #pragma once
 #include <QGraphicsView>
 
-class ERDSceneView : public QGraphicsView
+class SceneView : public QGraphicsView
 {
    Q_OBJECT
 public:

@@ -1,8 +1,8 @@
-#include "ERDSceneView.h"
+#include "SceneView.h"
 #include <QMouseEvent>
 #include <QScrollBar>
 
-void ERDSceneView::init()
+void SceneView::init()
 {
    m_isPanning = false;
    setOptimizationFlags(IndirectPainting);
@@ -11,7 +11,7 @@ void ERDSceneView::init()
    setTransformationAnchor(AnchorUnderMouse);
 }
 
-void ERDSceneView::mousePressEvent(QMouseEvent *event)
+void SceneView::mousePressEvent(QMouseEvent *event)
 {
    if ((event->buttons() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier))
    {
@@ -26,7 +26,7 @@ void ERDSceneView::mousePressEvent(QMouseEvent *event)
    }
 }
 
-void ERDSceneView::mouseMoveEvent(QMouseEvent *event)
+void SceneView::mouseMoveEvent(QMouseEvent *event)
 {
    if (m_isPanning)
    {
@@ -43,7 +43,7 @@ void ERDSceneView::mouseMoveEvent(QMouseEvent *event)
    }
 }
 
-void ERDSceneView::mouseReleaseEvent(QMouseEvent *event)
+void SceneView::mouseReleaseEvent(QMouseEvent *event)
 {
    if (m_isPanning)
    {
@@ -57,7 +57,7 @@ void ERDSceneView::mouseReleaseEvent(QMouseEvent *event)
    }
 }
 
-void ERDSceneView::wheelEvent(QWheelEvent *event)
+void SceneView::wheelEvent(QWheelEvent *event)
 {
    if (event->modifiers() & Qt::ControlModifier)
    {

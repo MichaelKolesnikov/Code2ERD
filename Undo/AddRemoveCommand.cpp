@@ -2,7 +2,7 @@
 #include "Models/ERDModel.h"
 
 AddRemoveCommand::AddRemoveCommand(ERDItemModel* model, Operation operation, ERDModel* erdModel, QUndoCommand* parent)
-   : ERDUndoCommand("AddRemoveCommand", parent), m_model(model), m_operation(operation), m_erdModel(erdModel), m_isRemoved(operation == Add ? true : false)
+   : UndoCommand("AddRemoveCommand", parent), m_model(model), m_operation(operation), m_erdModel(erdModel), m_isRemoved(operation == Add ? true : false)
 {
 }
 

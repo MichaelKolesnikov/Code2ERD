@@ -5,11 +5,8 @@
 class LineModel : public ERDItemModel
 {
    Q_OBJECT
-
    Q_PROPERTY(QString id READ id CONSTANT)
-
-   Q_PROPERTY(QVector<QPointF> nodes READ nodes WRITE setNodes NOTIFY nodesChanged)
-
+   Q_PROPERTY(QVector<QPointF> nodes READ nodes WRITE setNodes)
 
 public:
    explicit LineModel(const LineDTO& dto = LineDTO());
@@ -17,21 +14,10 @@ public:
 
    const LineDTO& dto() const { return m_dto; }
 
-   // get
-
    const QString& id() const { return m_dto.id; }
-
    const QVector<QPointF>& nodes() const { return m_dto.nodes; }
 
-
-   // set
-
    void setNodes(const QVector<QPointF>& value);
-
-
-signals:
-
-   void nodesChanged();
 
 private:
    LineDTO m_dto;

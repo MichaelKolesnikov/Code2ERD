@@ -5,18 +5,10 @@
 
 struct LineDTO : public ERDItemDTO
 {
-
    QVector<QPointF> nodes;
-
 
    bool operator==(const LineDTO& other) const
    {
-      return
-
-         id == other.id &&
-
-         nodes == other.nodes
-
-      ;
+      return id == other.id && nodes == other.nodes;
    }
 };

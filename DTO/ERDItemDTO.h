@@ -3,16 +3,10 @@
 
 struct ERDItemDTO
 {
-
    QString id;
-
 
    bool operator==(const ERDItemDTO& other) const
    {
-      return
-
-         id == other.id
-
-      ;
+      return id == other.id;
    }
 };

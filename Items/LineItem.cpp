@@ -6,6 +6,12 @@
 
 LineItem::LineItem(LineModel *model) : ERDItem(model), m_model(model)
 {
+   connect(m_model, &LineModel::propertyChanged, [this](const char*)
+   {
+      prepareGeometryChange();
+      update();
+   }
+   );
 }
 
 QRectF LineItem::boundingRect() const
