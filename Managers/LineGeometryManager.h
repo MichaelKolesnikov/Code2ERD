@@ -1,5 +1,6 @@
 #pragma once
 #include <QPointF>
+#include <optional>
 
 class LineModel;
 
@@ -20,5 +21,10 @@ public:
 
    static inline const qreal delta = 20;
    static QPointF projectPointOntoPerpendicular(const QPointF &p1, const QPointF &p2, const QPointF &p, const QPointF &base);
+
+   static std::optional<QPointF> intersectLines(
+      const QPointF& a, const QPointF& v1,  // a + t * v1
+      const QPointF& b, const QPointF& v2   // b + s * v2
+   );
 };
 

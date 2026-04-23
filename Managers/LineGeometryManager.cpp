@@ -70,6 +70,16 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          nodes[node == 0 ? 0 : nodes.size() - 1] = proj;
       }
    }
+   else if (nodes.size() == 3)
+   {
+      auto p_1 = nodes[node - 1];
+      auto p0 = nodes[node];
+      auto p1 = nodes[node + 1];
+      auto centerP = p1 + p_1 - p0;
+      nodes[node - 1] = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
+      nodes[node] = p;
+      nodes[node + 1] = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
+   }
    else
    {
       nodes[node] = p;
@@ -181,6 +191,22 @@ QPointF LineGeometryManager::projectPointOntoPerpendicular(
     qreal t = QPointF::dotProduct(w, v_perp);
 
     return base + t * v_perp;
+}
+
+std::optional<QPointF> LineGeometryManager::intersectLines(const QPointF &a, const QPointF &v1, const QPointF &b, const QPointF &v2)
+{
+   // a + t * v1 = b + s * v2
+   // t * v1 - s * v2 = b - a
+   // [v1x  -v2x] [t]   [bx-ax]
+   // [v1y  -v2y] [s] = [by-ay]
+
+   QPointF diff = b - a;
+   qreal det = v1.x() * (-v2.y()) - (-v2.x()) * v1.y();
+   if (std::abs(det) < 1e-8)
+      return std::nullopt;
+
+   qreal t = (diff.x() * (-v2.y()) - (-v2.x()) * diff.y()) / det;
+   return a + t * v1;
 }
 
 bool LineGeometryManager::isOnLine(const QPointF& p1, const QPointF& p2, const QPointF& p, qreal delta)
