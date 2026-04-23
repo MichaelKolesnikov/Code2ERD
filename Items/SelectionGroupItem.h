@@ -1,8 +1,8 @@
 #pragma once
-#include "ERDItem.h"
+#include "AncillaryItem.h"
 #include "IRectHolder.h"
 
-class SelectionGroupItem : public ERDItem, public IRectHolder
+class SelectionGroupItem : public AncillaryItem, public IRectHolder
 {
    Q_OBJECT
    Q_INTERFACES(IRectHolder)

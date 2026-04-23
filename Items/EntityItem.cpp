@@ -8,6 +8,7 @@ int EntityItem::type() const
 
 EntityItem::EntityItem(IdNamePositionSizeTypeModel* model) : ERDItem(model), m_model(model)
 {
+   setFlag(QGraphicsItem::ItemIsSelectable);
    setPos(model->position());
    connect(this, &EntityItem::xChanged, this, [this](){ m_model->setPosition(pos()); });
    connect(this, &EntityItem::yChanged, this, [this](){ m_model->setPosition(pos()); });

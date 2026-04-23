@@ -8,11 +8,16 @@ CONFIG += c++17
 
 SOURCES += \
     Items/AnchorItem.cpp \
+    Items/AncillaryItem.cpp \
+    Items/GhostLineItem.cpp \
+    Items/LineImpl.cpp \
     Items/SelectionGroupItem.cpp \
     Managers/LineGeometryManager.cpp \
+    Managers/SelectedLineManager.cpp \
     Mappers/DoublePairMapper.cpp \
     Mappers/PositionMapper.cpp \
     Mappers/SizeMapper.cpp \
+    ModelItemBinding.cpp \
     Models/IdNamePositionSizeTypeModel.cpp \
     Scene.cpp \
     SceneView.cpp \
@@ -37,6 +42,7 @@ SOURCES += \
     Models/LinesConnectionsModel.cpp \
     Models/LinkLineModel.cpp \
     RestrictedMenu.cpp \
+    Undo/ChangeLineNodesCommand.cpp \
     Undo/ReplaceErdModelCommand.cpp \
     Undo/UndoCommand.cpp \
     main.cpp \
@@ -48,13 +54,19 @@ HEADERS += \
     DTO/LineDTO.h \
     DTO/LinkLineDTO.h \
     Items/AnchorItem.h \
+    Items/AncillaryItem.h \
+    Items/GhostLineItem.h \
     Items/IRectHolder.h \
+    Items/LineImpl.h \
     Items/SelectionGroupItem.h \
     Managers/LineGeometryManager.h \
+    Managers/SelectedLineManager.h \
     Mappers/DoublePairMapper.h \
     Mappers/PositionMapper.h \
     Mappers/SizeMapper.h \
+    ModelItemBinding.h \
     Models/IdNamePositionSizeTypeModel.h \
+    ObjectPool.h \
     Scene.h \
     SceneView.h \
     Tools/NewLineDrawerTool.h \
@@ -82,6 +94,7 @@ HEADERS += \
     Models/LinesConnectionsModel.h \
     Models/LinkLineModel.h \
     RestrictedMenu.h \
+    Undo/ChangeLineNodesCommand.h \
     Undo/ReplaceErdModelCommand.h \
     Undo/UndoCommand.h
 

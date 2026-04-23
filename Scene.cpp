@@ -10,10 +10,22 @@
 #include "Items/AnchorItem.h"
 #include "Items/SelectionGroupItem.h"
 
+#include "Managers/SelectedLineManager.h"
+
 #include "Undo/AddRemoveCommand.h"
 
 #include <QUuid>
 #include <QGraphicsSceneContextMenuEvent>
+
+void Scene::init()
+{
+   if (m_isInited)
+   {
+      return;
+   }
+   m_isInited = true;
+   m_selectedLineManager = new SelectedLineManager(this, m_idToBinding);
+}
 
 void Scene::loadModel(ERDModel* erdModel)
 {
@@ -80,6 +92,12 @@ void Scene::setTool(Tool *tool)
    m_tool->activated();
 }
 
+void Scene::customClearSelection()
+{
+   m_selectedLineManager->removeLineItemSelection();
+   clearSelection();
+}
+
 void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
    RestrictedMenu menu;
@@ -133,68 +151,103 @@ void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-   if (event->button() & Qt::RightButton)
+   if (event->button() == Qt::RightButton)
    {
+      m_toTool = false;
+      m_wasPressed = false;
       return;
    }
    auto currentClampedItem = itemAt(event->scenePos(), QTransform());
    if (!currentClampedItem)
    {
+      customClearSelection();
       m_tool->mousePressEvent(event);
-      return;
-   }
-
-   if (auto lineItem = qgraphicsitem_cast<LineItem*>(currentClampedItem))
-   {
-      // m_selectedLineManager->selectLineItem(lineItem);
-   }
-   else if (!selectedItems().empty() && (m_anchor = qgraphicsitem_cast<AnchorItem*>(currentClampedItem)))
-   {
-//      if (m_selectedLineManager->hasLine())
-//      {
-//         m_selectedLineManager->prepareForAnchorMoving(m_anchor);
-//         event->accept();
-//      }
-//      else
-//      {
-//         m_workWithSelectionGroupItem = true;
-//         m_selectionGroupManager->prepareForResizing(m_anchor, event->scenePos());
-//         event->accept();
-//      }
-   }
-   else if (currentClampedItem->type() == EntityItem::Type)
-   {
-//      m_selectedLineManager->removeLineItemSelection();
-//      if (!(event->modifiers() & Qt::ControlModifier))
-//      {
-//         clearSelection();
-//      }
-//      currentClampedItem->setSelected(true);
-//      m_selectionGroupManager->updateSelectionGroup();
-//      m_selectionGroupManager->prepareForMoving(event->scenePos());
-//      m_workWithSelectionGroupItem = true;
-   }
-   else if (currentClampedItem->type() == SelectionGroupItem::Type)
-   {
-      // m_workWithSelectionGroupItem = true;
-      // m_selectionGroupManager->prepareForMoving(event->scenePos());
+      m_toTool = true;
+      m_wasPressed = true;
    }
    else
    {
-      clearSelection();
-      // m_selectionGroupManager->updateSelectionGroup();
-      m_tool->mousePressEvent(event);
+      m_wasPressed = true;
+      m_toTool = false;
+      auto selected = selectedItems();
+
+      if (auto lineItem = qgraphicsitem_cast<LineItem*>(currentClampedItem))
+      {
+         customClearSelection();
+         m_selectedLineManager->selectLineItem(lineItem);
+         auto selected = selectedItems();
+      }
+      else if (!selected.empty() && (m_anchor = qgraphicsitem_cast<AnchorItem*>(currentClampedItem)))
+      {
+         if (m_selectedLineManager->hasLine())
+         {
+            m_selectedLineManager->prepareForAnchorMoving(m_anchor);
+            event->accept();
+         }
+      }
+      else if (currentClampedItem->type() == EntityItem::Type)
+      {
+         customClearSelection();
+      }
+      else if (currentClampedItem->type() == SelectionGroupItem::Type)
+      {
+      }
+      else
+      {
+         customClearSelection();
+         m_tool->mousePressEvent(event);
+      }
    }
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-   m_tool->mouseMoveEvent(event);
+   if (m_wasPressed == true)
+   {
+      auto selected = selectedItems();
+      if (m_toTool)
+      {
+         m_tool->mouseMoveEvent(event);
+         return;
+      }
+      if (m_selectedLineManager->hasLine())
+      {
+         if (m_anchor)
+         {
+            m_selectedLineManager->moveChosenAnchor(event);
+         }
+         QGraphicsScene::mouseMoveEvent(event);
+         return;
+      }
+   }
+   else
+   {
+      QGraphicsScene::mouseMoveEvent(event);
+   }
 }
 
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-   m_tool->mouseReleaseEvent(event);
+   if (m_wasPressed)
+   {
+      m_wasPressed = false;
+      if (m_toTool)
+      {
+         m_tool->mouseReleaseEvent(event);
+         return;
+      }
+      if (m_selectedLineManager->hasLine())
+      {
+         if (m_anchor)
+         {
+            m_selectedLineManager->finishToMoveChosenAnchor(event);
+            m_anchor = nullptr;
+         }
+         auto selected = selectedItems();
+         return;
+      }
+      m_anchor = nullptr;
+   }
 }
 
 void Scene::addErdItemFromAddedModel(ERDItemModel *itemModel)

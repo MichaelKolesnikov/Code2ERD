@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
    ui->undoView->setStack(m_undoStack);
 
    m_scene = new Scene(this);
+   m_scene->init();
    m_scene->loadModel(new ERDModel());
    ui->graphicsView->init();
    ui->graphicsView->setScene(m_scene);

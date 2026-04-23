@@ -5,9 +5,7 @@
 class ERDItemModel : public QObject
 {
    Q_OBJECT
-
    Q_PROPERTY(QString id READ id CONSTANT)
-
 
 public:
    explicit ERDItemModel(const ERDItemDTO& dto = ERDItemDTO());

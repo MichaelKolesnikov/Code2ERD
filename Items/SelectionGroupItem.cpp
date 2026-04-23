@@ -8,7 +8,7 @@ int SelectionGroupItem::type() const
 }
 
 SelectionGroupItem::SelectionGroupItem()
-   : ERDItem(nullptr)
+   : AncillaryItem(nullptr)
 {
    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
    setFlag(QGraphicsItem::ItemIsFocusable, false);

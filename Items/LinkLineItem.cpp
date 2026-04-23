@@ -1,6 +1,7 @@
 #include "LinkLineItem.h"
 #include "Models/LinkLineModel.h"
 #include <QPainter>
+#include "LineImpl.h"
 
 int LinkLineItem::type() const
 {
@@ -19,7 +20,6 @@ void LinkLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
    {
       painter->drawText(m_model->nodes()[0], m_model->minCardinality() + "," + m_model->maxCardinality());
    }
-   painter->setPen(QPen(Qt::black, 1.5));
-   painter->drawPath(painterPath());
    painter->restore();
+   LineImpl::paint(nodes(), painter, option, widget);
 }

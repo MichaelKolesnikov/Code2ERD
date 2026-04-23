@@ -1,5 +1,7 @@
 #include "LineGeometryManager.h"
 #include "Models/LineModel.h"
+#include <QtMath>
+#include <QLineF>
 
 void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
 {
@@ -17,15 +19,65 @@ void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPo
    }
 }
 
-void LineGeometryManager::updateNode(int node, const QPointF &p)
+QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p)
 {
-   if (node == 0)
+   if (node >= nodes.size())
    {
-
+      throw "LineGeometryManager::updateNode(node >= nodes.size())";
    }
+   if (node < 0)
+   {
+      throw "LineGeometryManager::updateNode(node < 0)";
+   }
+
+   if (nodes.size() == 1)
+   {
+      nodes[0] = p;
+   }
+   else if (node == 0 || node == nodes.size() - 1)
+   {
+      auto proj = projectPointOntoLine(nodes[node], nodes[node == 0 ? 1 : nodes.size() - 2], p);
+      auto proj2 = projectPointOntoPerpendicular(
+         nodes[node == 0 ? 0 : nodes.size() - 1],
+         nodes[node == 0 ? 1 : nodes.size() - 2],
+         p,
+         nodes[node == 0 ? 1 : nodes.size() - 2]
+      );
+      if (dist(proj, nodes[node == 0 ? 1 : nodes.size() - 2]) < delta)
+      {
+         if (nodes.size() > 2 && dist(nodes[node == 0 ? 2 : nodes.size() - 3], proj2) < delta)
+         {
+            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+         }
+         else if (dist(nodes[node == 0 ? 1 : nodes.size() - 2], proj2) < delta)
+         {
+            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+         }
+         else
+         {
+            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+            nodes[node == 0 ? 0 : nodes.size() - 1] = proj2;
+         }
+      }
+      else if (dist(proj, p) > delta)
+      {
+         nodes.insert(node == 0 ? 1 : nodes.size() - 1, proj);
+         nodes[node == 0 ? 0 : nodes.size() - 1] = p;
+      }
+      else
+      {
+         nodes[node == 0 ? 0 : nodes.size() - 1] = proj;
+      }
+   }
+   else
+   {
+      nodes[node] = p;
+   }
+   return nodes;
 }
 
-void LineGeometryManager::updatePart(int, qreal)
+void LineGeometryManager::updatePart(QVector<QPointF>&, int, qreal)
 {
 
 }
@@ -54,7 +106,21 @@ QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2
       }
    }
    auto middle = (p1 + p2) / 2;
-   return nodes(p1, middle, isFirstPartHorizontal, bendNumber / 2) + nodes(middle, p2, isFirstPartHorizontal ^ ((bendNumber + 1) / 2 % 2 == 1), bendNumber / 2);
+   auto nodes1 = nodes(p1, middle, isFirstPartHorizontal, bendNumber / 2);
+   auto nodes2 = nodes(middle, p2, isFirstPartHorizontal ^ ((bendNumber + 1) / 2 % 2 == 1), bendNumber / 2);
+   if (
+      nodes1.size() > 1 && nodes2.size() > 1 &&
+      (
+         nodes1[nodes1.size() - 2].y() == nodes2[1].y()
+         ||
+         nodes1[nodes1.size() - 2].x() == nodes2[1].x()
+      )
+   )
+   {
+      nodes1 = nodes1.mid(0, nodes1.size() - 1);
+      nodes2 = nodes2.mid(1, nodes2.size() - 1);
+   }
+   return nodes1 + nodes2;
 }
 
 bool LineGeometryManager::isVeryShortToExist(LineModel *lineModel)
@@ -70,4 +136,84 @@ bool LineGeometryManager::isVeryShortToExist(LineModel *lineModel)
       length += (nodes[i - 1] - nodes[i]).manhattanLength();
    }
    return length < 20;
+}
+
+QPointF LineGeometryManager::projectPointOntoLine(const QPointF &p1, const QPointF &p2, const QPointF &p)
+{
+   if (p1.x() == p2.x())
+   {
+      return {p1.x(), p.y()};
+   }
+   else if (p1.y() == p2.y())
+   {
+      return {p.x(), p1.y()};
+   }
+
+   QPointF v = p2 - p1;
+   QPointF w = p - p1;
+
+   auto c1 = QPointF::dotProduct(w, v);
+   auto c2 = QPointF::dotProduct(v, v);
+
+   if (c2 < 0.0001)
+      return p1;
+
+   auto t = c1 / c2;
+   return p1 + t * v;
+}
+
+QPointF LineGeometryManager::projectPointOntoPerpendicular(
+        const QPointF& p1,
+        const QPointF& p2,
+        const QPointF& p,
+        const QPointF& base)
+{
+    QPointF v = p2 - p1;
+    QPointF v_perp(-v.y(), v.x());
+
+    qreal len2 = v_perp.x() * v_perp.x() + v_perp.y() * v_perp.y();
+    if (len2 < 0.0001)
+        return p1;
+
+    v_perp = v_perp / qSqrt(len2);
+
+    QPointF w = p - p1;
+    qreal t = QPointF::dotProduct(w, v_perp);
+
+    return base + t * v_perp;
+}
+
+bool LineGeometryManager::isOnLine(const QPointF& p1, const QPointF& p2, const QPointF& p, qreal delta)
+{
+   return dist(projectPointOntoLine(p1, p2, p), p) < delta;
+}
+
+qreal LineGeometryManager::dist(const QPointF &p1, const QPointF &p2)
+{
+   return QLineF(p1, p2).length();
+}
+
+QVector<QPointF> LineGeometryManager::optimizeLine(const QVector<QPointF> &nodes)
+{
+   QVector<QPointF> ans;
+   if (nodes.size() == 0)
+   {
+      return ans;
+   }
+   ans.push_back(nodes[0]);
+   for (int i = 1; i < nodes.size(); ++i)
+   {
+      if (QLineF(ans.last(), nodes[i]).length() > delta)
+      {
+         if (ans.size() > 1 && isOnLine(ans.last(), ans[ans.size() - 2], nodes[i], delta))
+         {
+            ans[ans.size() - 1] = nodes[i];
+         }
+         else
+         {
+            ans.push_back(nodes[i]);
+         }
+      }
+   }
+   return ans;
 }

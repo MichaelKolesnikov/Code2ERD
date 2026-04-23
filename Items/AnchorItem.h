@@ -1,7 +1,7 @@
 #pragma once
-#include "ERDItem.h"
+#include "AncillaryItem.h"
 
-class AnchorItem : public ERDItem
+class AnchorItem : public AncillaryItem
 {
    Q_OBJECT
 public:
@@ -11,8 +11,8 @@ public:
 
    enum Constraint
    {
-      Y,
-      X,
+      Horizontal,
+      Vertical,
       Y_X,
       Y_MINUS_X,
       NoConstraint

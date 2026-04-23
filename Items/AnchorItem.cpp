@@ -14,16 +14,16 @@ AnchorItem::Constraint AnchorItem::constraintType() const
 }
 
 AnchorItem::AnchorItem(Constraint constraint)
-   : ERDItem(nullptr), m_constraint(constraint)
+   : AncillaryItem(nullptr), m_constraint(constraint)
 {
    setFlag(QGraphicsItem::ItemIgnoresTransformations);
    setAcceptHoverEvents(true);
    switch (constraint)
    {
-   case Y:
+   case Horizontal:
       setCursor(Qt::SizeHorCursor);
       break;
-   case X:
+   case Vertical:
       setCursor(Qt::SizeVerCursor);
       break;
    case Y_MINUS_X:

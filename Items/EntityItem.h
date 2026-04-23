@@ -7,6 +7,7 @@ class EntityItem : public ERDItem, public IRectHolder
 {
    Q_OBJECT
    Q_INTERFACES(IRectHolder)
+
 public:
    enum {
       Type = UserType + EntityItemType

@@ -1,25 +1,26 @@
 #pragma once
-#include "ERDItem.h"
-class LineModel;
+#include "AncillaryItem.h"
 
-class LineItem : public ERDItem
+class GhostLineItem : public AncillaryItem
 {
    Q_OBJECT
 
 public:
-   enum { Type = UserType + ERDItemType::PropertyLineItemType };
+   enum { Type = UserType + ERDItemType::GhostLineItemType };
 
    int type() const override;
 
-   explicit LineItem(LineModel*);
+   explicit GhostLineItem();
+   explicit GhostLineItem(const QVector<QPointF>&);
 
    virtual QRectF boundingRect() const override;
    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
    virtual QPainterPath shape() const override;
 
    const QVector<QPointF>& nodes() const;
+   void setNodes(const QVector<QPointF>&);
 
 private:
-   LineModel* m_model;
+   QVector<QPointF> m_nodes;
 };
 

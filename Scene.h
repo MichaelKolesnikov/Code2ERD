@@ -1,6 +1,7 @@
 #pragma once
 #include <QGraphicsScene>
 #include <QMap>
+#include "ModelItemBinding.h"
 
 class QUndoCommand;
 class ERDItemModel;
@@ -8,6 +9,7 @@ class ERDModel;
 class ERDItem;
 class AnchorItem;
 class Tool;
+class SelectedLineManager;
 
 class Scene : public QGraphicsScene
 {
@@ -15,6 +17,8 @@ class Scene : public QGraphicsScene
 
 public:
    using QGraphicsScene::QGraphicsScene;
+
+   void init();
 
    void loadModel(ERDModel* erdModel);
 
@@ -24,6 +28,8 @@ public:
 
    const Tool* currentTool() const;
    void setTool(Tool*);
+
+   void customClearSelection();
 
 signals:
    void signalToPushCommand(QUndoCommand*);
@@ -46,13 +52,9 @@ protected:
    friend class Tool;
 
 private:
-   Tool* m_tool = nullptr;
+   bool m_isInited = false;
 
-   struct Binding
-   {
-      ERDItemModel* erdItemModel;
-      ERDItem* erdItem;
-   };
+   Tool* m_tool = nullptr;
 
    void addErdItemFromAddedModel(ERDItemModel* itemModel);
    void removeErdItemFromRemovedModel(ERDItemModel* itemModel);
@@ -60,5 +62,10 @@ private:
    ERDModel* m_erdModel = nullptr;
    QMap<QString, Binding> m_idToBinding;
 
-   AnchorItem* m_anchor;
+   AnchorItem* m_anchor = nullptr;
+
+   SelectedLineManager* m_selectedLineManager;
+
+   bool m_wasPressed = false;
+   bool m_toTool = false;
 };
