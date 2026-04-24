@@ -20,6 +20,7 @@ public:
    static qreal dist(const QPointF& p1, const QPointF& p2);
 
    static inline const qreal delta = 20;
+   static inline const qreal eps = 0.01;
    static QPointF projectPointOntoPerpendicular(const QPointF &p1, const QPointF &p2, const QPointF &p, const QPointF &base);
 
    static std::optional<QPointF> intersectLines(

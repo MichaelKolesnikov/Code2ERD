@@ -19,6 +19,7 @@ void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPo
    }
 }
 
+#include <iostream>
 QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p)
 {
    if (node >= nodes.size())
@@ -70,15 +71,129 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          nodes[node == 0 ? 0 : nodes.size() - 1] = proj;
       }
    }
-   else if (nodes.size() == 3)
+   else if (nodes.size() > 2)
    {
       auto p_1 = nodes[node - 1];
       auto p0 = nodes[node];
       auto p1 = nodes[node + 1];
       auto centerP = p1 + p_1 - p0;
-      nodes[node - 1] = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
-      nodes[node] = p;
-      nodes[node + 1] = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
+      if (dist(centerP, p) < delta)
+      {
+         nodes.remove(node - 1);
+         nodes.remove(node - 1);
+         nodes[node - 1] = centerP;
+      }
+      else
+      {
+         nodes[node - 1] = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
+         nodes[node] = p;
+         nodes[node + 1] = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
+         if (dist(p, nodes[node + 1]) < delta || dist(p, nodes[node - 1]) < delta)
+         {
+            nodes.remove(node - 1);
+            nodes.remove(node - 1);
+            nodes[node - 1] = centerP;
+         }
+         else
+         {
+            std::optional<QPointF> p_2, p2, p_3, p3, p_4, p4;
+            if (node - 2 >= 0)
+            {
+               p_2 = nodes[node - 2];
+            }
+            if (node - 3 >= 0)
+            {
+               p_3 = nodes[node - 3];
+            }
+            if (node - 4 >= 0)
+            {
+               p_4 = nodes[node - 4];
+            }
+            if (node + 2 < nodes.size())
+            {
+               p2 = nodes[node + 2];
+            }
+            if (node + 3 < nodes.size())
+            {
+               p3 = nodes[node + 3];
+            }
+            if (node + 4 < nodes.size())
+            {
+               p4 = nodes[node + 4];
+            }
+            if (p2 && isOnLine(nodes[node], nodes[node + 1], p2.value(), delta))
+            {
+               nodes[node] = projectPointOntoLine(nodes[node + 2], nodes[node + 2] + (nodes[node] - nodes[node + 1]), nodes[node]);
+               nodes.remove(node + 1);
+               if (p3)
+               {
+                  if (dist(p3.value(), nodes[node]) < delta)
+                  {
+                     if (p4)
+                     {
+                        nodes[node] = projectPointOntoLine(
+                           p4.value(), p3.value(),
+                           p_1
+                        );
+                     }
+                     else
+                     {
+                        nodes[node] = p3.value();
+                        nodes[node - 1] = projectPointOntoLine(p_1, p_1 + (p2.value() - p3.value()), p3.value());
+                     }
+                     nodes.remove(node + 1);
+                     nodes.remove(node + 1);
+                  }
+                  else
+                  {
+                     auto v32 = nodes[node + 1] - nodes[node + 2];
+                     auto v12 = nodes[node + 1] - nodes[node];
+                     if (QPointF::dotProduct(v32, v12) > eps)
+                     {
+                        nodes.remove(node + 1);
+                     }
+                  }
+               }
+            }
+            if (p_2 && isOnLine(nodes[node], nodes[node - 1], p_2.value(), delta))
+            {
+               nodes[node] = projectPointOntoLine(nodes[node - 2], nodes[node - 2] + (nodes[node] - nodes[node - 1]), nodes[node]);
+               nodes.remove(node - 1);
+               if (p_3)
+               {
+                  if (dist(p_3.value(), nodes[node - 1]) < delta)
+                  {
+                     if (p_4)
+                     {
+                        nodes[node] = projectPointOntoLine(
+                           p_4.value(), p_3.value(),
+                           p1
+                        );
+                        nodes.remove(node - 3);
+                        nodes.remove(node - 3);
+                        nodes.remove(node - 3);
+                     }
+                     else
+                     {
+                        nodes[node - 1] = p_3.value();
+                        nodes[node] = projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value());
+                        nodes.remove(node - 2);
+                        nodes.remove(node - 2);
+                     }
+                  }
+                  else
+                  {
+                     auto v32 = nodes[node - 2] - nodes[node - 3];
+                     auto v12 = nodes[node - 2] - nodes[node - 1];
+                     if (QPointF::dotProduct(v32, v12) > eps)
+                     {
+                        nodes.remove(node - 2);
+                     }
+                  }
+               }
+            }
+         }
+      }
    }
    else
    {
@@ -119,16 +234,19 @@ QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2
    auto nodes1 = nodes(p1, middle, isFirstPartHorizontal, bendNumber / 2);
    auto nodes2 = nodes(middle, p2, isFirstPartHorizontal ^ ((bendNumber + 1) / 2 % 2 == 1), bendNumber / 2);
    if (
-      nodes1.size() > 1 && nodes2.size() > 1 &&
+      nodes1.size() > 0 && nodes2.size() > 0 &&
       (
-         nodes1[nodes1.size() - 2].y() == nodes2[1].y()
+         nodes1[nodes1.size() - 1].y() == nodes2[0].y()
          ||
-         nodes1[nodes1.size() - 2].x() == nodes2[1].x()
+         nodes1[nodes1.size() - 1].x() == nodes2[0].x()
       )
    )
    {
       nodes1 = nodes1.mid(0, nodes1.size() - 1);
-      nodes2 = nodes2.mid(1, nodes2.size() - 1);
+      if (bendNumber % 2 == 0)
+      {
+         nodes2 = nodes2.mid(1, nodes2.size() - 1);
+      }
    }
    return nodes1 + nodes2;
 }
