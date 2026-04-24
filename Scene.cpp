@@ -16,6 +16,7 @@
 
 #include <QUuid>
 #include <QGraphicsSceneContextMenuEvent>
+#include <QPainter>
 
 void Scene::init()
 {
@@ -24,6 +25,7 @@ void Scene::init()
       return;
    }
    m_isInited = true;
+   setSceneRect(-2000, -2000, 4000, 4000);
    m_selectedLineManager = new SelectedLineManager(this, m_idToBinding);
 }
 
@@ -248,6 +250,36 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
       }
       m_anchor = nullptr;
    }
+}
+
+void Scene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+   static const int gridSize = 15;
+   painter->save();
+
+   painter->fillRect(rect, Qt::lightGray);
+   painter->fillRect(sceneRect(), Qt::white);
+
+   painter->setClipRect(sceneRect());
+
+   QPen gridPen(QColor(240, 240, 240), 1.0);
+   gridPen.setCosmetic(true);
+   painter->setPen(gridPen);
+
+   int left = int(sceneRect().left() / gridSize) * gridSize;
+   int right = sceneRect().right();
+   int top = sceneRect().top();
+   int bottom = sceneRect().bottom();
+   for (auto x = left; x < right; x += gridSize)
+   {
+      painter->drawLine(QPointF(x, top), QPointF(x, bottom));
+   }
+   for (auto y = top; y < bottom; y += gridSize)
+   {
+      painter->drawLine(QPointF(left, y), QPointF(right, y));
+   }
+
+   painter->restore();
 }
 
 void Scene::addErdItemFromAddedModel(ERDItemModel *itemModel)

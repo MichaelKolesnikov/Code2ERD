@@ -39,6 +39,7 @@ protected:
    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+   virtual void drawBackground(QPainter *painter, const QRectF& rect) override;
 
    void baseContextMenuEvent(QGraphicsSceneContextMenuEvent *event);
    void baseKeyPressEvent(QKeyEvent *event);
