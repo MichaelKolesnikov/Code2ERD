@@ -19,6 +19,7 @@ void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPo
    }
 }
 
+#include <QSet>
 #include <iostream>
 QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p)
 {
@@ -124,67 +125,91 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                p4 = nodes[node + 4];
             }
 
-            if (p2 && isOnLine(p, newP1, p2.value(), delta))
+            if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               nodes[node] = projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p);
-               nodes.remove(node + 1);
+               QVector<int> toRemove;
+               toRemove.push_back(node - 1);
+               toRemove.push_back(node);
+               toRemove.push_back(node + 1);
                if (p3)
                {
-                  if (dist(p3.value(), p) < delta)
-                  {
-                     if (p4)
-                     {
-                        nodes[node] = projectPointOntoLine(
-                           p4.value(), p3.value(),
-                           p_1
-                        );
-                        nodes.remove(node + 1);
-                        nodes.remove(node + 1);
-                        nodes.remove(node - 1);
-                     }
-                     else
-                     {
-                        nodes[node] = p3.value();
-                        nodes[node - 1] = projectPointOntoLine(p_1, p_1 + (p2.value() - p3.value()), p3.value());
-                        nodes.remove(node + 1);
-                        nodes.remove(node + 1);
-                     }
-                  }
-                  else
-                  {
-                     nodes.remove(node + 1);
-                  }
+                  toRemove.push_back(node + 2);
                }
-            }
-            if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
-            {
-               nodes[node] = projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p);
-               nodes.remove(node - 1);
                if (p_3)
                {
-                  if (dist(p_3.value(), p) < delta)
+                  toRemove.push_back(node - 2);
+               }
+               std::sort(std::begin(toRemove), std::end(toRemove), std::greater<int>());
+               for (auto ind : toRemove)
+               {
+                  nodes.remove(ind);
+               }
+               nodes.insert(toRemove.last(), projectPointOntoLine(p_2.value(), p_2.value() + (p_1 - p0), p2.value()));
+            }
+            else
+            {
+               if (p2 && isOnLine(p, newP1, p2.value(), delta))
+               {
+                  nodes[node] = projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p);
+                  nodes.remove(node + 1);
+                  if (p3)
                   {
-                     if (p_4)
+                     if (dist(p3.value(), p) < delta)
                      {
-                        nodes[node] = projectPointOntoLine(
-                           p_4.value(), p_3.value(),
-                           p1
-                        );
-                        nodes.remove(node - 3);
-                        nodes.remove(node - 3);
-                        nodes.remove(node - 3);
+                        if (p4)
+                        {
+                           nodes[node] = projectPointOntoLine(
+                              p4.value(), p3.value(),
+                              p_1
+                           );
+                           nodes.remove(node + 1);
+                           nodes.remove(node + 1);
+                           nodes.remove(node - 1);
+                        }
+                        else
+                        {
+                           nodes[node] = p3.value();
+                           nodes[node - 1] = projectPointOntoLine(p_1, p_1 + (p2.value() - p3.value()), p3.value());
+                           nodes.remove(node + 1);
+                           nodes.remove(node + 1);
+                        }
                      }
                      else
                      {
-                        nodes[node - 1] = p_3.value();
-                        nodes[node] = projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value());
-                        nodes.remove(node - 2);
-                        nodes.remove(node - 2);
+                        nodes.remove(node + 1);
                      }
                   }
-                  else
+               }
+               else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
+               {
+                  nodes[node] = projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p);
+                  nodes.remove(node - 1);
+                  if (p_3)
                   {
-                     nodes.remove(node - 2);
+                     if (dist(p_3.value(), p) < delta)
+                     {
+                        if (p_4)
+                        {
+                           nodes[node] = projectPointOntoLine(
+                              p_4.value(), p_3.value(),
+                              p1
+                           );
+                           nodes.remove(node - 3);
+                           nodes.remove(node - 3);
+                           nodes.remove(node - 3);
+                        }
+                        else
+                        {
+                           nodes[node - 1] = p_3.value();
+                           nodes[node] = projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value());
+                           nodes.remove(node - 2);
+                           nodes.remove(node - 2);
+                        }
+                     }
+                     else
+                     {
+                        nodes.remove(node - 2);
+                     }
                   }
                }
             }
