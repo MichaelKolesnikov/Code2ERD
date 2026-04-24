@@ -85,13 +85,15 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       }
       else
       {
-         nodes[node - 1] = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
+         auto newP_1 = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
+         auto newP1 = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
+         nodes[node - 1] = newP_1;
          nodes[node] = p;
-         nodes[node + 1] = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
+         nodes[node + 1] = newP1;
          if (dist(p, nodes[node + 1]) < delta || dist(p, nodes[node - 1]) < delta)
          {
-            nodes.remove(node - 1);
-            nodes.remove(node - 1);
+            nodes.remove(node + 1);
+            nodes.remove(node);
             nodes[node - 1] = centerP;
          }
          else
@@ -121,13 +123,14 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
             {
                p4 = nodes[node + 4];
             }
-            if (p2 && isOnLine(nodes[node], nodes[node + 1], p2.value(), delta))
+
+            if (p2 && isOnLine(p, newP1, p2.value(), delta))
             {
-               nodes[node] = projectPointOntoLine(nodes[node + 2], nodes[node + 2] + (nodes[node] - nodes[node + 1]), nodes[node]);
+               nodes[node] = projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p);
                nodes.remove(node + 1);
                if (p3)
                {
-                  if (dist(p3.value(), nodes[node]) < delta)
+                  if (dist(p3.value(), p) < delta)
                   {
                      if (p4)
                      {
@@ -135,33 +138,31 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                            p4.value(), p3.value(),
                            p_1
                         );
+                        nodes.remove(node + 1);
+                        nodes.remove(node + 1);
+                        nodes.remove(node - 1);
                      }
                      else
                      {
                         nodes[node] = p3.value();
                         nodes[node - 1] = projectPointOntoLine(p_1, p_1 + (p2.value() - p3.value()), p3.value());
-                     }
-                     nodes.remove(node + 1);
-                     nodes.remove(node + 1);
-                  }
-                  else
-                  {
-                     auto v32 = nodes[node + 1] - nodes[node + 2];
-                     auto v12 = nodes[node + 1] - nodes[node];
-                     if (QPointF::dotProduct(v32, v12) > eps)
-                     {
+                        nodes.remove(node + 1);
                         nodes.remove(node + 1);
                      }
                   }
+                  else
+                  {
+                     nodes.remove(node + 1);
+                  }
                }
             }
-            if (p_2 && isOnLine(nodes[node], nodes[node - 1], p_2.value(), delta))
+            if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               nodes[node] = projectPointOntoLine(nodes[node - 2], nodes[node - 2] + (nodes[node] - nodes[node - 1]), nodes[node]);
+               nodes[node] = projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p);
                nodes.remove(node - 1);
                if (p_3)
                {
-                  if (dist(p_3.value(), nodes[node - 1]) < delta)
+                  if (dist(p_3.value(), p) < delta)
                   {
                      if (p_4)
                      {
@@ -183,12 +184,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                   }
                   else
                   {
-                     auto v32 = nodes[node - 2] - nodes[node - 3];
-                     auto v12 = nodes[node - 2] - nodes[node - 1];
-                     if (QPointF::dotProduct(v32, v12) > eps)
-                     {
-                        nodes.remove(node - 2);
-                     }
+                     nodes.remove(node - 2);
                   }
                }
             }
