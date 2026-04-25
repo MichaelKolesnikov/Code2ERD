@@ -3,6 +3,7 @@
 #include <QtMath>
 #include <QLineF>
 #include <QSet>
+#include <algorithm>
 
 void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
 {
@@ -77,6 +78,23 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       auto p0 = nodes[node];
       auto p1 = nodes[node + 1];
       auto centerP = p1 + p_1 - p0;
+
+      std::optional<QPointF> p_2, p2, p_3, p3, p_4, p4;
+      auto assign = [&](int offset, std::optional<QPointF>& opt)
+      {
+         int idx = node + offset;
+         if (0 <= idx && idx < nodes.size())
+         {
+            opt = nodes[idx];
+         }
+      };
+      assign(-2, p_2);
+      assign(-3, p_3);
+      assign(-4, p_4);
+      assign(2, p2);
+      assign(3, p3);
+      assign(4, p4);
+
       if (dist(centerP, p) < delta)
       {
          nodes.remove(node - 1);
@@ -87,41 +105,36 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       {
          auto newP_1 = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
          auto newP1 = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
-         nodes[node - 1] = newP_1;
-         nodes[node] = p;
-         nodes[node + 1] = newP1;
-         if (dist(p, newP1) < delta || dist(p, newP_1) < delta)
+         int minToRemove = node - 1;
+         int maxToRemove = node + 1;
+         QVector<QPointF> toInsert;
+
+         if (dist(p, newP1) < delta)
          {
-            nodes.remove(node + 1);
-            nodes.remove(node);
-            nodes[node - 1] = centerP;
+            if (p2)
+            {
+               toInsert = {centerP};
+            }
+            else
+            {
+               toInsert = {centerP, newP1};
+            }
+         }
+         else if (dist(p, newP_1) < delta)
+         {
+            if (p_2)
+            {
+               toInsert = {centerP};
+            }
+            else
+            {
+               toInsert = {newP_1, centerP};
+            }
          }
          else
          {
-            int minToRemove = node;
-            int maxToRemove = node - 1;
-            QVector<QPointF> toInsert;
-
-            std::optional<QPointF> p_2, p2, p_3, p3, p_4, p4;
-            auto assign = [&](int offset, std::optional<QPointF>& opt)
-            {
-               int idx = node + offset;
-               if (0 <= idx && idx < nodes.size())
-               {
-                  opt = nodes[idx];
-               }
-            };
-            assign(-2, p_2);
-            assign(-3, p_3);
-            assign(-4, p_4);
-            assign(2, p2);
-            assign(3, p3);
-            assign(4, p4);
-
             if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               minToRemove = node - 1;
-               maxToRemove = node + 1;
                toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p_1 - p0), p2.value())};
                if (p3)
                {
@@ -134,13 +147,16 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
             }
             else if (p2 && isOnLine(p, newP1, p2.value(), delta))
             {
-               minToRemove = node;
-               maxToRemove = node + 1;
-               toInsert = {projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p)};
+               toInsert = {
+                  newP_1,
+                  projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p)
+               };
                if (p3)
                {
+                  maxToRemove = node + 2;
                   if (dist(p3.value(), p) < delta)
                   {
+                     maxToRemove = node + 3;
                      if (p4)
                      {
                         toInsert = {
@@ -149,37 +165,32 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                               p_1
                            )
                         };
-                        minToRemove = node - 1;
-                        maxToRemove = node + 3;
                      }
                      else
                      {
                         toInsert = {
-                           p3.value(),
                            projectPointOntoLine(
                               p_1, p_1 + (p2.value() - p3.value()),
                               p3.value()
-                           )
+                           ),
+                           p3.value(),
                         };
-                        minToRemove = node - 1;
-                        maxToRemove = node + 3;
                      }
-                  }
-                  else
-                  {
-                     maxToRemove = node + 2;
                   }
                }
             }
             else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               minToRemove = node - 1;
-               maxToRemove = node;
-               toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p)};
+               toInsert = {
+                  projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p),
+                  newP1
+               };
                if (p_3)
                {
+                  minToRemove = node - 2;
                   if (dist(p_3.value(), p) < delta)
                   {
+                     minToRemove = node - 3;
                      if (p_4)
                      {
                         toInsert = {
@@ -188,31 +199,27 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                               p1
                            )
                         };
-                        minToRemove = node - 3;
-                        maxToRemove = node + 1;
                      }
                      else
                      {
                         toInsert = {
+                           p_3.value(),
                            projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value()),
-                           p_3.value()
                         };
-                        minToRemove = node - 3;
-                        maxToRemove = node + 1;
                      }
-                  }
-                  else
-                  {
-                     minToRemove = node - 2;
                   }
                }
             }
-
-            nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
-            for (auto p : toInsert)
+            else
             {
-               nodes.insert(minToRemove, p);
+               toInsert = {newP_1, p, newP1};
             }
+         }
+         nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+         nodes.insert(nodes.begin() + minToRemove, toInsert.size(), {0,0});
+         for (int i = 0; i < toInsert.size(); ++i)
+         {
+            nodes[i + minToRemove] = toInsert[i];
          }
       }
    }
