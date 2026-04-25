@@ -2,6 +2,7 @@
 #include "Models/LineModel.h"
 #include <QtMath>
 #include <QLineF>
+#include <QSet>
 
 void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
 {
@@ -19,8 +20,6 @@ void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPo
    }
 }
 
-#include <QSet>
-#include <iostream>
 QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p)
 {
    if (node >= nodes.size())
@@ -146,70 +145,81 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                }
                nodes.insert(toRemove.last(), projectPointOntoLine(p_2.value(), p_2.value() + (p_1 - p0), p2.value()));
             }
-            else
+            else if (p2 && isOnLine(p, newP1, p2.value(), delta))
             {
-               if (p2 && isOnLine(p, newP1, p2.value(), delta))
+               int minToRemove = node;
+               int maxToRemove = node + 1;
+               QVector<QPointF> toInsert = {projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p)};
+               if (p3)
                {
-                  nodes[node] = projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p);
-                  nodes.remove(node + 1);
-                  if (p3)
+                  if (dist(p3.value(), p) < delta)
                   {
-                     if (dist(p3.value(), p) < delta)
+                     if (p4)
                      {
-                        if (p4)
-                        {
-                           nodes[node] = projectPointOntoLine(
+                        toInsert = {
+                           projectPointOntoLine(
                               p4.value(), p3.value(),
                               p_1
-                           );
-                           nodes.remove(node + 1);
-                           nodes.remove(node + 1);
-                           nodes.remove(node - 1);
-                        }
-                        else
-                        {
-                           nodes[node] = p3.value();
-                           nodes[node - 1] = projectPointOntoLine(p_1, p_1 + (p2.value() - p3.value()), p3.value());
-                           nodes.remove(node + 1);
-                           nodes.remove(node + 1);
-                        }
+                           )
+                        };
+                        minToRemove = node - 1;
+                        maxToRemove = node + 3;
                      }
                      else
                      {
-                        nodes.remove(node + 1);
+                        toInsert = {
+                           p3.value(),
+                           projectPointOntoLine(
+                              p_1, p_1 + (p2.value() - p3.value()),
+                              p3.value()
+                           )
+                        };
+                        minToRemove = node - 1;
+                        maxToRemove = node + 3;
                      }
                   }
-               }
-               else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
-               {
-                  nodes[node] = projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p);
-                  nodes.remove(node - 1);
-                  if (p_3)
+                  else
                   {
-                     if (dist(p_3.value(), p) < delta)
+                     maxToRemove = node + 2;
+                  }
+               }
+               nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+               for (auto p : toInsert)
+               {
+                  nodes.insert(minToRemove, p);
+               }
+            }
+            else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
+            {
+               QVector<int> toRemove;
+               QVector<int> toInsert;
+               nodes[node] = projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p);
+               nodes.remove(node - 1);
+               if (p_3)
+               {
+                  if (dist(p_3.value(), p) < delta)
+                  {
+                     if (p_4)
                      {
-                        if (p_4)
-                        {
-                           nodes[node] = projectPointOntoLine(
-                              p_4.value(), p_3.value(),
-                              p1
-                           );
-                           nodes.remove(node - 3);
-                           nodes.remove(node - 3);
-                           nodes.remove(node - 3);
-                        }
-                        else
-                        {
-                           nodes[node - 1] = p_3.value();
-                           nodes[node] = projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value());
-                           nodes.remove(node - 2);
-                           nodes.remove(node - 2);
-                        }
+                        nodes[node] = projectPointOntoLine(
+                           p_4.value(), p_3.value(),
+                           p1
+                        );
+                        nodes.remove(node - 3);
+                        nodes.remove(node - 3);
+                        nodes.remove(node - 3);
                      }
                      else
                      {
+                        nodes[node - 1] = p_3.value();
+                        nodes[node] = projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value());
+                        nodes.remove(node - 2);
                         nodes.remove(node - 2);
                      }
+                  }
+                  else
+                  {
+                     nodes.remove(node - 2);
                   }
                }
             }
