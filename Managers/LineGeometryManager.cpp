@@ -126,24 +126,22 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
 
             if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               QVector<int> toRemove;
-               toRemove.push_back(node - 1);
-               toRemove.push_back(node);
-               toRemove.push_back(node + 1);
+               int minToRemove = node - 1;
+               int maxToRemove = node + 1;
+               QVector<QPointF> toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p_1 - p0), p2.value())};
                if (p3)
                {
-                  toRemove.push_back(node + 2);
+                  maxToRemove = node + 2;
                }
                if (p_3)
                {
-                  toRemove.push_back(node - 2);
+                  minToRemove = node - 2;
                }
-               std::sort(std::begin(toRemove), std::end(toRemove), std::greater<int>());
-               for (auto ind : toRemove)
+               nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+               for (auto p : toInsert)
                {
-                  nodes.remove(ind);
+                  nodes.insert(minToRemove, p);
                }
-               nodes.insert(toRemove.last(), projectPointOntoLine(p_2.value(), p_2.value() + (p_1 - p0), p2.value()));
             }
             else if (p2 && isOnLine(p, newP1, p2.value(), delta))
             {
