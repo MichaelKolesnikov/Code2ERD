@@ -189,36 +189,43 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
             }
             else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               QVector<int> toRemove;
-               QVector<int> toInsert;
-               nodes[node] = projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p);
-               nodes.remove(node - 1);
+               int minToRemove = node - 1;
+               int maxToRemove = node;
+               QVector<QPointF> toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p)};
                if (p_3)
                {
                   if (dist(p_3.value(), p) < delta)
                   {
                      if (p_4)
                      {
-                        nodes[node] = projectPointOntoLine(
-                           p_4.value(), p_3.value(),
-                           p1
-                        );
-                        nodes.remove(node - 3);
-                        nodes.remove(node - 3);
-                        nodes.remove(node - 3);
+                        toInsert = {
+                           projectPointOntoLine(
+                              p_4.value(), p_3.value(),
+                              p1
+                           )
+                        };
+                        minToRemove = node - 3;
+                        maxToRemove = node + 1;
                      }
                      else
                      {
-                        nodes[node - 1] = p_3.value();
-                        nodes[node] = projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value());
-                        nodes.remove(node - 2);
-                        nodes.remove(node - 2);
+                        toInsert = {
+                           projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value()),
+                           p_3.value()
+                        };
+                        minToRemove = node - 3;
+                        maxToRemove = node + 1;
                      }
                   }
                   else
                   {
-                     nodes.remove(node - 2);
+                     minToRemove = node - 2;
                   }
+               }
+               nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+               for (auto p : toInsert)
+               {
+                  nodes.insert(minToRemove, p);
                }
             }
          }
