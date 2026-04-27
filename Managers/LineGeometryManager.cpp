@@ -3,7 +3,7 @@
 #include <QtMath>
 #include <QLineF>
 #include <QSet>
-#include <algorithm>
+#include <optional>
 
 void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
 {
@@ -109,9 +109,8 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       }
       else
       {
-         auto newP_1 = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
-         auto newP1 = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
-
+         auto newP_1 = intersectLines(p_1, (centerP - p_1), p, (centerP - p1));
+         auto newP1 = intersectLines(p1, (centerP - p1), p, (centerP - p_1));
 
          if (dist(p, newP1) < delta)
          {
@@ -336,7 +335,7 @@ QPointF LineGeometryManager::projectPointOntoPerpendicular(
     return base + t * v_perp;
 }
 
-std::optional<QPointF> LineGeometryManager::intersectLines(const QPointF &a, const QPointF &v1, const QPointF &b, const QPointF &v2)
+QPointF LineGeometryManager::intersectLines(const QPointF &a, const QPointF &v1, const QPointF &b, const QPointF &v2)
 {
    // a + t * v1 = b + s * v2
    // t * v1 - s * v2 = b - a
@@ -346,7 +345,9 @@ std::optional<QPointF> LineGeometryManager::intersectLines(const QPointF &a, con
    QPointF diff = b - a;
    qreal det = v1.x() * (-v2.y()) - (-v2.x()) * v1.y();
    if (std::abs(det) < 1e-8)
-      return std::nullopt;
+   {
+      return (a + b) / 2;
+   }
 
    qreal t = (diff.x() * (-v2.y()) - (-v2.x()) * diff.y()) / det;
    return a + t * v1;

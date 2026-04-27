@@ -31,7 +31,7 @@ public:
    bool isStartAnchorChosen() const;
    bool isEndAnchorChosen() const;
 
-   bool m_freeNodesEditing;
+   bool m_freeNodesEditing = false;
 
 private:
    inline static qreal m_snapRadius = 20.0;

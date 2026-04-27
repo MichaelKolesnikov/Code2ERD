@@ -83,8 +83,8 @@ void MainWindow::createToolBars()
    addToolBar(Qt::TopToolBarArea, m_mainToolBar);
 
    m_newLineDrawerTool->m_bendNumber = ui->spinBoxBendsNumber->value();
-   m_newLineDrawerTool->m_isFirstPartHorizontal = ui->checkBox->isEnabled();
-   m_scene->setFreeNodesEditing(ui->checkBoxFreeNodesMoving->isEnabled());
+   m_newLineDrawerTool->m_isFirstPartHorizontal = ui->checkBox->isChecked();
+   m_scene->setFreeNodesEditing(ui->checkBoxFreeNodesMoving->isChecked());
 }
 
 void MainWindow::onToolSelected(QAction* action)
