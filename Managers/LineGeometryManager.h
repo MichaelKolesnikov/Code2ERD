@@ -7,13 +7,12 @@ public:
    LineGeometryManager() = delete;
 
    static QVector<QPointF> nodes(const QPointF&, const QPointF&, bool isFirstPartHorizontal=true, int bendNumber=2);
-   static QVector<QPointF> updateNode(QVector<QPointF>, int, const QPointF&, bool free=false, bool ctrl=false);
+   static QVector<QPointF> updateNode(QVector<QPointF>, int, const QPointF&, bool free=false, bool ctrl=false, bool exact=false);
    static bool isVeryShortToExist(const QVector<QPointF>&);
    static QPointF projectPointOntoLine(const QPointF& p1, const QPointF& p2, const QPointF& p);
    static bool isOnLine(const QPointF& p1, const QPointF& p2, const QPointF& p, qreal delta);
    static qreal dist(const QPointF& p1, const QPointF& p2);
 
-   static inline const qreal delta = 20;
    static inline const qreal eps = 0.01;
    static QPointF projectPointOntoPerpendicular(const QPointF &p1, const QPointF &p2, const QPointF &p, const QPointF &base);
 

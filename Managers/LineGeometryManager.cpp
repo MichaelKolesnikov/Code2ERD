@@ -17,7 +17,7 @@ QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2
    return nodesRec(p1, p2, isFirstPartHorizontal, bendNumber);
 }
 
-QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p, bool free, bool ctrl)
+QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p, bool free, bool ctrl, bool exact)
 {
    if (node >= nodes.size())
    {
@@ -27,6 +27,12 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
    {
       throw "LineGeometryManager::updateNode(node < 0)";
    }
+
+   qreal delta = exact ? 0 : 20;
+   auto tooSmall = [delta](qreal x)
+   {
+      return qAbs(x) < delta;
+   };
 
    auto p0 = nodes[node];
    std::optional<QPointF> p1, p_1, p_2, p2, p_3, p3, p_4, p4;
@@ -51,7 +57,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
    {
       nodes[node] = p;
    }
-   else if (dist(nodes[node], p) < delta)
+   else if (tooSmall(dist(nodes[node], p)))
    {
       nodes[node] = nodes[node];
    }
@@ -84,14 +90,14 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
             p,
             nodes[node == 0 ? 1 : nodes.size() - 2]
          );
-         if (dist(proj, nodes[node == 0 ? 1 : nodes.size() - 2]) < delta)
+         if (tooSmall(dist(proj, nodes[node == 0 ? 1 : nodes.size() - 2])))
          {
-            if (nodes.size() > 2 && dist(nodes[node == 0 ? 2 : nodes.size() - 3], proj2) < delta)
+            if (nodes.size() > 2 && tooSmall(dist(nodes[node == 0 ? 2 : nodes.size() - 3], proj2)))
             {
                nodes.remove(node == 0 ? 0 : nodes.size() - 1);
                nodes.remove(node == 0 ? 0 : nodes.size() - 1);
             }
-            else if (dist(nodes[node == 0 ? 1 : nodes.size() - 2], proj2) < delta)
+            else if (tooSmall(dist(nodes[node == 0 ? 1 : nodes.size() - 2], proj2)))
             {
                nodes.remove(node == 0 ? 0 : nodes.size() - 1);
             }
@@ -125,21 +131,21 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                nodes[foli(1)]
             );
             QVector<QPointF> toInsert;
-            if (fol(3) && dist(fol(3).value(), p) < delta)
+            if (fol(3) && tooSmall(dist(fol(3).value(), p)))
             {
                toInsert = {fol(3).value()};
                maxToRemove = foli(3);
             }
-            else if (fol(2) && dist(fol(2).value(), p) < delta)
+            else if (fol(2) && tooSmall(dist(fol(2).value(), p)))
             {
                toInsert = {fol(2).value()};
                maxToRemove = foli(2);
             }
-            else if (dist(p, fol(1).value()) < delta)
+            else if (tooSmall(dist(p, fol(1).value())))
             {
                toInsert = {fol(1).value()};
             }
-            else if (fol(2) && dist(newPm1, fol(2).value()) < delta)
+            else if (fol(2) && tooSmall(dist(newPm1, fol(2).value())))
             {
                toInsert = {projectPointOntoLine(fol(2).value(), fol(2).value() + fol(1).value() - fol(0).value(), p)};
                if (fol(3))
@@ -147,11 +153,11 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                   maxToRemove = foli(2);
                }
             }
-            else if (dist(newPm1, p) < delta)
+            else if (tooSmall(dist(newPm1, p)))
             {
                toInsert = {newPm1};
             }
-            else if (dist(p, per) < delta)
+            else if (tooSmall(dist(p, per)))
             {
                toInsert = node == 0 ? QVector<QPointF>{per, nodes[foli(1)]} : QVector<QPointF>{nodes[foli(1)], per};
             }
@@ -185,11 +191,11 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       auto proj_1 = projectPointOntoLine(p0, p_1.value(), p);
       auto proj1 = projectPointOntoLine(p0, p1.value(), p);
 
-      if (dist(centerP, p) < delta)
+      if (tooSmall(dist(centerP, p)))
       {
          toInsert = {centerP};
       }
-      else if (dist(p, newP1) < delta)
+      else if (tooSmall(dist(p, newP1)))
       {
          if (p2)
          {
@@ -197,10 +203,10 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          }
          else
          {
-            toInsert = {centerP, dist(newP1, p1.value()) < delta ? p1.value() : newP1};
+            toInsert = {centerP, tooSmall(dist(newP1, p1.value())) ? p1.value() : newP1};
          }
       }
-      else if (dist(p, newP_1) < delta)
+      else if (tooSmall(dist(p, newP_1)))
       {
          if (p_2)
          {
@@ -208,7 +214,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          }
          else
          {
-            toInsert = {dist(newP_1, p_1.value()) < delta ? p_1.value() : newP_1, centerP};
+            toInsert = {tooSmall(dist(newP_1, p_1.value())) ? p_1.value() : newP_1, centerP};
          }
       }
       else if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
@@ -266,7 +272,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          if (p_3)
          {
             minToRemove = node - 2;
-            if (dist(p_3.value(), p) < delta)
+            if (tooSmall(dist(p_3.value(), p)))
             {
                minToRemove = node - 3;
                if (p_4)
@@ -288,11 +294,11 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
             }
          }
       }
-      else if (dist(proj_1, p) < delta)
+      else if (tooSmall(dist(proj_1, p)))
       {
          toInsert = {p_1.value(), proj_1, newP1};
       }
-      else if (dist(proj1, p) < delta)
+      else if (tooSmall(dist(proj1, p)))
       {
          toInsert = {newP_1, proj1, p1.value()};
       }
