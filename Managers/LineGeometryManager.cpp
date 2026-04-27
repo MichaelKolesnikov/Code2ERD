@@ -112,28 +112,60 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       {
          if (dist(p, nodes[node]) > delta)
          {
-            nodes[node == 0 ? 1 : nodes.size() - 2] = projectPointOntoPerpendicular(
+            int minToRemove = foli(0);
+            int maxToRemove = foli(1);
+            auto per = projectPointOntoLine(nodes[node], nodes[foli(1)], p);
+            auto newPm1 = projectPointOntoPerpendicular(
                nodes[node],
-               nodes[node == 0 ? 1 : nodes.size() - 2],
-               p + (nodes[node == 0 ? 1 : nodes.size() - 2] - nodes[node]),
-               nodes[node == 0 ? 1 : nodes.size() - 2]
+               nodes[foli(1)],
+               p + (nodes[foli(1)] - nodes[node]),
+               nodes[foli(1)]
             );
-            nodes[node] = p;
-            if (fol(2) && dist(fol(1).value(), fol(2).value()) < delta)
+            QVector<QPointF> toInsert;
+            if (fol(3) && dist(fol(3).value(), p) < delta)
             {
-               int minToRemove;
-               int maxToRemove;
-               nodes[node] = projectPointOntoLine(fol(2).value(), fol(2).value() + fol(1).value() - fol(0).value(), p);
-               minToRemove = maxToRemove = foli(1);
+               toInsert = {fol(3).value()};
+               maxToRemove = foli(3);
+            }
+            else if (fol(2) && dist(fol(2).value(), p) < delta)
+            {
+               toInsert = {fol(2).value()};
+               maxToRemove = foli(2);
+            }
+            else if (dist(p, fol(1).value()) < delta)
+            {
+               toInsert = {fol(1).value()};
+            }
+            else if (fol(2) && dist(newPm1, fol(2).value()) < delta)
+            {
+               toInsert = {projectPointOntoLine(fol(2).value(), fol(2).value() + fol(1).value() - fol(0).value(), p)};
                if (fol(3))
                {
                   maxToRemove = foli(2);
                }
-               if (minToRemove > maxToRemove)
-               {
-                  qSwap(minToRemove, maxToRemove);
-               }
-               nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+            }
+            else if (dist(newPm1, p) < delta)
+            {
+               toInsert = {newPm1};
+            }
+            else if (dist(p, per) < delta)
+            {
+               toInsert = node == 0 ? QVector<QPointF>{per, nodes[foli(1)]} : QVector<QPointF>{nodes[foli(1)], per};
+            }
+            else
+            {
+               toInsert = node == 0 ? QVector<QPointF>{p, newPm1} : QVector<QPointF>{newPm1, p};
+            }
+
+            if (minToRemove > maxToRemove)
+            {
+               qSwap(minToRemove, maxToRemove);
+            }
+            nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+            nodes.insert(minToRemove, toInsert.size(), {0, 0});
+            for (int i = 0; i < toInsert.size(); ++i)
+            {
+               nodes[minToRemove + i] = toInsert[i];
             }
          }
       }
