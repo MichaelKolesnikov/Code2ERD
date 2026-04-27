@@ -84,6 +84,7 @@ void MainWindow::createToolBars()
 
    m_newLineDrawerTool->m_bendNumber = ui->spinBoxBendsNumber->value();
    m_newLineDrawerTool->m_isFirstPartHorizontal = ui->checkBox->isEnabled();
+   m_scene->setFreeNodesEditing(ui->checkBoxFreeNodesMoving->isEnabled());
 }
 
 void MainWindow::onToolSelected(QAction* action)
@@ -164,3 +165,7 @@ void MainWindow::on_spinBoxBendsNumber_editingFinished()
    m_newLineDrawerTool->m_bendNumber = ui->spinBoxBendsNumber->value();
 }
 
+void MainWindow::on_checkBoxFreeNodesMoving_clicked(bool checked)
+{
+   m_scene->setFreeNodesEditing(checked);
+}

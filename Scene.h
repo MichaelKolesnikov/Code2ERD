@@ -31,6 +31,8 @@ public:
 
    void customClearSelection();
 
+   void setFreeNodesEditing(bool free);
+
 signals:
    void signalToPushCommand(QUndoCommand*);
 

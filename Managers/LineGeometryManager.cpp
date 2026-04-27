@@ -21,7 +21,7 @@ void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPo
    }
 }
 
-QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p)
+QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p, bool free)
 {
    if (node >= nodes.size())
    {
@@ -32,9 +32,13 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       throw "LineGeometryManager::updateNode(node < 0)";
    }
 
-   if (nodes.size() == 1)
+   if (free)
    {
-      nodes[0] = p;
+      nodes[node] = p;
+   }
+   else if (nodes.size() == 1)
+   {
+      nodes.push_back(p);
    }
    else if (node == 0 || node == nodes.size() - 1)
    {
@@ -72,8 +76,12 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          nodes[node == 0 ? 0 : nodes.size() - 1] = proj;
       }
    }
-   else if (nodes.size() > 2)
+   else
    {
+      int minToRemove = node - 1;
+      int maxToRemove = node + 1;
+      QVector<QPointF> toInsert;
+
       auto p_1 = nodes[node - 1];
       auto p0 = nodes[node];
       auto p1 = nodes[node + 1];
@@ -97,17 +105,13 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
 
       if (dist(centerP, p) < delta)
       {
-         nodes.remove(node - 1);
-         nodes.remove(node - 1);
-         nodes[node - 1] = centerP;
+         toInsert = {centerP};
       }
       else
       {
          auto newP_1 = intersectLines(p_1, (centerP - p_1), p, (centerP - p1)).value();
          auto newP1 = intersectLines(p1, (centerP - p1), p, (centerP - p_1)).value();
-         int minToRemove = node - 1;
-         int maxToRemove = node + 1;
-         QVector<QPointF> toInsert;
+
 
          if (dist(p, newP1) < delta)
          {
@@ -215,24 +219,17 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                toInsert = {newP_1, p, newP1};
             }
          }
-         nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
-         nodes.insert(nodes.begin() + minToRemove, toInsert.size(), {0,0});
-         for (int i = 0; i < toInsert.size(); ++i)
-         {
-            nodes[i + minToRemove] = toInsert[i];
-         }
+      }
+
+      nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+      nodes.insert(nodes.begin() + minToRemove, toInsert.size(), {0,0});
+      for (int i = 0; i < toInsert.size(); ++i)
+      {
+         nodes[i + minToRemove] = toInsert[i];
       }
    }
-   else
-   {
-      nodes[node] = p;
-   }
+
    return nodes;
-}
-
-void LineGeometryManager::updatePart(QVector<QPointF>&, int, qreal)
-{
-
 }
 
 QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
@@ -363,29 +360,4 @@ bool LineGeometryManager::isOnLine(const QPointF& p1, const QPointF& p2, const Q
 qreal LineGeometryManager::dist(const QPointF &p1, const QPointF &p2)
 {
    return QLineF(p1, p2).length();
-}
-
-QVector<QPointF> LineGeometryManager::optimizeLine(const QVector<QPointF> &nodes)
-{
-   QVector<QPointF> ans;
-   if (nodes.size() == 0)
-   {
-      return ans;
-   }
-   ans.push_back(nodes[0]);
-   for (int i = 1; i < nodes.size(); ++i)
-   {
-      if (QLineF(ans.last(), nodes[i]).length() > delta)
-      {
-         if (ans.size() > 1 && isOnLine(ans.last(), ans[ans.size() - 2], nodes[i], delta))
-         {
-            ans[ans.size() - 1] = nodes[i];
-         }
-         else
-         {
-            ans.push_back(nodes[i]);
-         }
-      }
-   }
-   return ans;
 }

@@ -55,6 +55,7 @@ void NewLineDrawerTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    if (event->button() == Qt::LeftButton)
    {
       mouseMoveEvent(event);
+      m_lineItem->hide();
       if (LineGeometryManager::isVeryShortToExist(m_lineModel))
       {
          return;
@@ -63,5 +64,4 @@ void NewLineDrawerTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
       dto.id = QUuid::createUuid().toString();
       m_scene->pushCommand(new AddRemoveCommand(new LineModel(dto), AddRemoveCommand::Add, m_scene->erdModel()));
    }
-   m_lineItem->hide();
 }

@@ -31,6 +31,8 @@ public:
    bool isStartAnchorChosen() const;
    bool isEndAnchorChosen() const;
 
+   bool m_freeNodesEditing;
+
 private:
    inline static qreal m_snapRadius = 20.0;
    const QMap<QString, Binding>& m_idToBinding;

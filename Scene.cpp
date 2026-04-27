@@ -100,6 +100,11 @@ void Scene::customClearSelection()
    clearSelection();
 }
 
+void Scene::setFreeNodesEditing(bool free)
+{
+   m_selectedLineManager->m_freeNodesEditing = free;
+}
+
 void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
    RestrictedMenu menu;

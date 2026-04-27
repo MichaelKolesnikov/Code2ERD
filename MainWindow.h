@@ -36,6 +36,8 @@ private slots:
 
    void on_spinBoxBendsNumber_editingFinished();
 
+   void on_checkBoxFreeNodesMoving_clicked(bool checked);
+
 private:
    Ui::MainWindow *ui;
 
