@@ -1,5 +1,4 @@
 #include "LineGeometryManager.h"
-#include "Models/LineModel.h"
 #include <QtMath>
 #include <QLineF>
 #include <QSet>
@@ -357,14 +356,13 @@ QVector<QPointF> LineGeometryManager::nodesRec(const QPointF &p1, const QPointF 
    return nodes1 + nodes2;
 }
 
-bool LineGeometryManager::isVeryShortToExist(LineModel *lineModel)
+bool LineGeometryManager::isVeryShortToExist(const QVector<QPointF>& nodes)
 {
-   if (lineModel->nodes().isEmpty())
+   if (nodes.isEmpty())
    {
       return true;
    }
    qreal length = 0;
-   auto& nodes = lineModel->nodes();
    for (int i = 1; i < nodes.size(); ++i)
    {
       length += (nodes[i - 1] - nodes[i]).manhattanLength();

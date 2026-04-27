@@ -56,7 +56,7 @@ void NewLineDrawerTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    {
       mouseMoveEvent(event);
       m_lineItem->hide();
-      if (LineGeometryManager::isVeryShortToExist(m_lineModel))
+      if (LineGeometryManager::isVeryShortToExist(m_lineModel->nodes()))
       {
          return;
       }

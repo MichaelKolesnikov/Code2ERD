@@ -1,8 +1,6 @@
 #pragma once
 #include <QPointF>
 
-class LineModel;
-
 class LineGeometryManager
 {
 public:
@@ -10,7 +8,7 @@ public:
 
    static QVector<QPointF> nodes(const QPointF&, const QPointF&, bool isFirstPartHorizontal=true, int bendNumber=2);
    static QVector<QPointF> updateNode(QVector<QPointF>, int, const QPointF&, bool free=false, bool ctrl=false);
-   static bool isVeryShortToExist(LineModel*);
+   static bool isVeryShortToExist(const QVector<QPointF>&);
    static QPointF projectPointOntoLine(const QPointF& p1, const QPointF& p2, const QPointF& p);
    static bool isOnLine(const QPointF& p1, const QPointF& p2, const QPointF& p, qreal delta);
    static qreal dist(const QPointF& p1, const QPointF& p2);
