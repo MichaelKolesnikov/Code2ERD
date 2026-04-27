@@ -3,7 +3,7 @@
 #include <QMap>
 #include "ModelItemBinding.h"
 
-class QUndoCommand;
+class UndoCommand;
 class ERDItemModel;
 class ERDModel;
 class ERDItem;
@@ -24,7 +24,7 @@ public:
 
    ERDModel* erdModel();
 
-   void pushCommand(QUndoCommand*);
+   void pushCommand(UndoCommand*);
 
    const Tool* currentTool() const;
    void setTool(Tool*);
@@ -34,7 +34,7 @@ public:
    void setFreeNodesEditing(bool free);
 
 signals:
-   void signalToPushCommand(QUndoCommand*);
+   void signalToPushCommand(UndoCommand*);
 
 protected:
    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;

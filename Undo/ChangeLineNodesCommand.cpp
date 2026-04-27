@@ -23,5 +23,5 @@ void ChangeLineNodesCommand::undo()
 
 bool ChangeLineNodesCommand::hasEffect() const
 {
-   return m_old == m_new;
+   return m_old != m_new;
 }

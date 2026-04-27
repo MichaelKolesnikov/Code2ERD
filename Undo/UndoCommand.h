@@ -7,6 +7,6 @@ public:
    UndoCommand(const QString& text, QUndoCommand* parent = nullptr);
    virtual ~UndoCommand() = default;
 
-   virtual bool hasEffect() const;
+   virtual bool hasEffect() const = 0;
 };
 

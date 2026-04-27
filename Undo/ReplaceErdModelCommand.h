@@ -13,6 +13,8 @@ public:
    virtual void undo() override;
    virtual void redo() override;
 
+   virtual bool hasEffect() const override;
+
 private:
    ERDModel* m_oldErdModel;
    ERDModel* m_newErdModel;

@@ -5,23 +5,20 @@
 #include <QSet>
 #include <optional>
 
-void LineGeometryManager::set(LineModel *lineModel, const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
+QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
 {
    if (bendNumber == 0)
    {
-      lineModel->setNodes({p1, p2});
+      return {p1, p2};
    }
    else if (p1.x() == p2.x() || p1.y() == p2.y())
    {
-      lineModel->setNodes({p1, p2});
+      return {p1, p2};
    }
-   else
-   {
-      lineModel->setNodes(nodes(p1, p2, isFirstPartHorizontal, bendNumber));
-   }
+   return nodesRec(p1, p2, isFirstPartHorizontal, bendNumber);
 }
 
-QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p, bool free)
+QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int node, const QPointF &p, bool free, bool ctrl)
 {
    if (node >= nodes.size())
    {
@@ -31,6 +28,25 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
    {
       throw "LineGeometryManager::updateNode(node < 0)";
    }
+
+   auto p0 = nodes[node];
+   std::optional<QPointF> p1, p_1, p_2, p2, p_3, p3, p_4, p4;
+   auto assign = [&](int offset, std::optional<QPointF>& opt)
+   {
+      int idx = node + offset;
+      if (0 <= idx && idx < nodes.size())
+      {
+         opt = nodes[idx];
+      }
+   };
+   assign(1, p1);
+   assign(-1, p_1);
+   assign(-2, p_2);
+   assign(-3, p_3);
+   assign(-4, p_4);
+   assign(2, p2);
+   assign(3, p3);
+   assign(4, p4);
 
    if (free)
    {
@@ -42,38 +58,84 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
    }
    else if (node == 0 || node == nodes.size() - 1)
    {
-      auto proj = projectPointOntoLine(nodes[node], nodes[node == 0 ? 1 : nodes.size() - 2], p);
-      auto proj2 = projectPointOntoPerpendicular(
-         nodes[node == 0 ? 0 : nodes.size() - 1],
-         nodes[node == 0 ? 1 : nodes.size() - 2],
-         p,
-         nodes[node == 0 ? 1 : nodes.size() - 2]
-      );
-      if (dist(proj, nodes[node == 0 ? 1 : nodes.size() - 2]) < delta)
+      auto foli = [&](int offset)
       {
-         if (nodes.size() > 2 && dist(nodes[node == 0 ? 2 : nodes.size() - 3], proj2) < delta)
+         return node == 0 ? offset : nodes.size() - 1 - offset;
+      };
+      auto fol = [&](int offset)
+      {
+         std::optional<QPointF> opt;
+         auto idx = foli(offset);
+         if (0 <= idx && idx < nodes.size())
          {
-            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
-            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+            opt = nodes[idx];
          }
-         else if (dist(nodes[node == 0 ? 1 : nodes.size() - 2], proj2) < delta)
+         return opt;
+      };
+      if (ctrl)
+      {
+         auto proj = projectPointOntoLine(nodes[node], nodes[node == 0 ? 1 : nodes.size() - 2], p);
+         auto proj2 = projectPointOntoPerpendicular(
+            nodes[node == 0 ? 0 : nodes.size() - 1],
+            nodes[node == 0 ? 1 : nodes.size() - 2],
+            p,
+            nodes[node == 0 ? 1 : nodes.size() - 2]
+         );
+         if (dist(proj, nodes[node == 0 ? 1 : nodes.size() - 2]) < delta)
          {
-            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+            if (nodes.size() > 2 && dist(nodes[node == 0 ? 2 : nodes.size() - 3], proj2) < delta)
+            {
+               nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+               nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+            }
+            else if (dist(nodes[node == 0 ? 1 : nodes.size() - 2], proj2) < delta)
+            {
+               nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+            }
+            else
+            {
+               nodes.remove(node == 0 ? 0 : nodes.size() - 1);
+               nodes[node == 0 ? 0 : nodes.size() - 1] = proj2;
+            }
+         }
+         else if (dist(proj, p) > delta)
+         {
+            nodes.insert(node == 0 ? 1 : nodes.size() - 1, proj);
+            nodes[node == 0 ? 0 : nodes.size() - 1] = p;
          }
          else
          {
-            nodes.remove(node == 0 ? 0 : nodes.size() - 1);
-            nodes[node == 0 ? 0 : nodes.size() - 1] = proj2;
+            nodes[node == 0 ? 0 : nodes.size() - 1] = proj;
          }
-      }
-      else if (dist(proj, p) > delta)
-      {
-         nodes.insert(node == 0 ? 1 : nodes.size() - 1, proj);
-         nodes[node == 0 ? 0 : nodes.size() - 1] = p;
       }
       else
       {
-         nodes[node == 0 ? 0 : nodes.size() - 1] = proj;
+         if (dist(p, nodes[node]) > delta)
+         {
+            nodes[node == 0 ? 1 : nodes.size() - 2] = projectPointOntoPerpendicular(
+               nodes[node],
+               nodes[node == 0 ? 1 : nodes.size() - 2],
+               p + (nodes[node == 0 ? 1 : nodes.size() - 2] - nodes[node]),
+               nodes[node == 0 ? 1 : nodes.size() - 2]
+            );
+            nodes[node] = p;
+            if (fol(2) && dist(fol(1).value(), fol(2).value()) < delta)
+            {
+               int minToRemove;
+               int maxToRemove;
+               nodes[node] = projectPointOntoLine(fol(2).value(), fol(2).value() + fol(1).value() - fol(0).value(), p);
+               minToRemove = maxToRemove = foli(1);
+               if (fol(3))
+               {
+                  maxToRemove = foli(2);
+               }
+               if (minToRemove > maxToRemove)
+               {
+                  qSwap(minToRemove, maxToRemove);
+               }
+               nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
+            }
+         }
       }
    }
    else
@@ -82,26 +144,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       int maxToRemove = node + 1;
       QVector<QPointF> toInsert;
 
-      auto p_1 = nodes[node - 1];
-      auto p0 = nodes[node];
-      auto p1 = nodes[node + 1];
-      auto centerP = p1 + p_1 - p0;
-
-      std::optional<QPointF> p_2, p2, p_3, p3, p_4, p4;
-      auto assign = [&](int offset, std::optional<QPointF>& opt)
-      {
-         int idx = node + offset;
-         if (0 <= idx && idx < nodes.size())
-         {
-            opt = nodes[idx];
-         }
-      };
-      assign(-2, p_2);
-      assign(-3, p_3);
-      assign(-4, p_4);
-      assign(2, p2);
-      assign(3, p3);
-      assign(4, p4);
+      auto centerP = p1.value() + p_1.value() - p0;
 
       if (dist(centerP, p) < delta)
       {
@@ -109,8 +152,8 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       }
       else
       {
-         auto newP_1 = intersectLines(p_1, (centerP - p_1), p, (centerP - p1));
-         auto newP1 = intersectLines(p1, (centerP - p1), p, (centerP - p_1));
+         auto newP_1 = intersectLines(p_1.value(), (centerP - p_1.value()), p, (centerP - p1.value()));
+         auto newP1 = intersectLines(p1.value(), (centerP - p1.value()), p, (centerP - p_1.value()));
 
          if (dist(p, newP1) < delta)
          {
@@ -138,7 +181,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          {
             if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
             {
-               toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p_1 - p0), p2.value())};
+               toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p_1.value() - p0), p2.value())};
                if (p3)
                {
                   maxToRemove = node + 2;
@@ -165,7 +208,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                         toInsert = {
                            projectPointOntoLine(
                               p4.value(), p3.value(),
-                              p_1
+                              p_1.value()
                            )
                         };
                      }
@@ -173,7 +216,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                      {
                         toInsert = {
                            projectPointOntoLine(
-                              p_1, p_1 + (p2.value() - p3.value()),
+                              p_1.value(), p_1.value() + (p2.value() - p3.value()),
                               p3.value()
                            ),
                            p3.value(),
@@ -199,7 +242,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                         toInsert = {
                            projectPointOntoLine(
                               p_4.value(), p_3.value(),
-                              p1
+                              p1.value()
                            )
                         };
                      }
@@ -207,7 +250,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                      {
                         toInsert = {
                            p_3.value(),
-                           projectPointOntoLine(p1, p1 + (p_2.value() - p_3.value()), p_3.value()),
+                           projectPointOntoLine(p1.value(), p1.value() + (p_2.value() - p_3.value()), p_3.value()),
                         };
                      }
                   }
@@ -231,7 +274,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
    return nodes;
 }
 
-QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
+QVector<QPointF> LineGeometryManager::nodesRec(const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal, int bendNumber)
 {
    if (bendNumber == 0)
    {
@@ -255,8 +298,8 @@ QVector<QPointF> LineGeometryManager::nodes(const QPointF &p1, const QPointF &p2
       }
    }
    auto middle = (p1 + p2) / 2;
-   auto nodes1 = nodes(p1, middle, isFirstPartHorizontal, bendNumber / 2);
-   auto nodes2 = nodes(middle, p2, isFirstPartHorizontal ^ ((bendNumber + 1) / 2 % 2 == 1), bendNumber / 2);
+   auto nodes1 = nodesRec(p1, middle, isFirstPartHorizontal, bendNumber / 2);
+   auto nodes2 = nodesRec(middle, p2, isFirstPartHorizontal ^ ((bendNumber + 1) / 2 % 2 == 1), bendNumber / 2);
    if (
       nodes1.size() > 0 && nodes2.size() > 0 &&
       (

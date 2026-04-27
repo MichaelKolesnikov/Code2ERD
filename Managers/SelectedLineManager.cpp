@@ -57,12 +57,13 @@ void SelectedLineManager::removeLineItemSelection()
    m_selectedLine = nullptr;
 }
 
-void SelectedLineManager::prepareForAnchorMoving(AnchorItem *currentDraggedAnchor)
+void SelectedLineManager::prepareForAnchorMoving(AnchorItem *currentDraggedAnchor, bool ctrl)
 {
    m_tmpLine->show();
    m_tmpLine->setNodes(m_selectedLine->nodes());
    m_draggedAnchor = currentDraggedAnchor;
    m_initialDraggedAnchorScenePos = currentDraggedAnchor->scenePos();
+   m_ctrl = ctrl;
 }
 
 void SelectedLineManager::moveChosenAnchor(QGraphicsSceneMouseEvent *event)
@@ -104,7 +105,7 @@ void SelectedLineManager::setNewPosToAnchorWithLineNode(QPointF mousePos)
    else
    {
       m_draggedAnchor->setPos(mousePos);
-      m_tmpLine->setNodes(LineGeometryManager::updateNode(m_selectedLine->nodes(), m_anchors.indexOf(m_draggedAnchor), m_draggedAnchor->scenePos(), m_freeNodesEditing));
+      m_tmpLine->setNodes(LineGeometryManager::updateNode(m_selectedLine->nodes(), m_anchors.indexOf(m_draggedAnchor), m_draggedAnchor->scenePos(), m_freeNodesEditing, m_ctrl));
       return;
    }
    qreal directionLengthSquared = constraintDirection.x() * constraintDirection.x() + constraintDirection.y() * constraintDirection.y();
@@ -117,7 +118,7 @@ void SelectedLineManager::setNewPosToAnchorWithLineNode(QPointF mousePos)
    QPointF projectedDelta(projectionFactor * constraintDirection.x(), projectionFactor * constraintDirection.y());
    QPointF newAnchorScenePos = m_initialDraggedAnchorScenePos + projectedDelta;
    m_draggedAnchor->setPos(newAnchorScenePos);
-   m_tmpLine->setNodes(LineGeometryManager::updateNode(m_selectedLine->nodes(), m_anchors.indexOf(m_draggedAnchor), m_draggedAnchor->scenePos(), m_freeNodesEditing));
+   m_tmpLine->setNodes(LineGeometryManager::updateNode(m_selectedLine->nodes(), m_anchors.indexOf(m_draggedAnchor), m_draggedAnchor->scenePos(), m_freeNodesEditing, m_ctrl));
 }
 
 void SelectedLineManager::setAnchorsOnLineItem(LineItem *lineItem)

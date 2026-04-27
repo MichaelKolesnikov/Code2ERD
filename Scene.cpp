@@ -70,7 +70,7 @@ ERDModel *Scene::erdModel()
    return m_erdModel;
 }
 
-void Scene::pushCommand(QUndoCommand *cmd)
+void Scene::pushCommand(UndoCommand *cmd)
 {
    emit signalToPushCommand(cmd);
 }
@@ -188,7 +188,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
       {
          if (m_selectedLineManager->hasLine())
          {
-            m_selectedLineManager->prepareForAnchorMoving(m_anchor);
+            m_selectedLineManager->prepareForAnchorMoving(m_anchor, event->modifiers() & Qt::ControlModifier);
             event->accept();
          }
       }

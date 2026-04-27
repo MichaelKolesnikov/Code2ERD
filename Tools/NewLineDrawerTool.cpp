@@ -46,7 +46,7 @@ void NewLineDrawerTool::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
    if (event->buttons() & Qt::LeftButton)
    {
-      LineGeometryManager::set(m_lineModel, m_initialMouseScenePos, event->scenePos(), m_isFirstPartHorizontal, m_bendNumber);
+      m_lineModel->setNodes(LineGeometryManager::nodes(m_initialMouseScenePos, event->scenePos(), m_isFirstPartHorizontal, m_bendNumber));
    }
 }
 

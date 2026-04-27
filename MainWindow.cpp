@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "Undo/UndoCommand.h"
 #include "Scene.h"
 #include "SceneView.h"
 #include "Mappers/ERDJsonMapper.h"
@@ -11,7 +12,6 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QJsonDocument>
-#include <QUndoStack>
 #include <QToolBar>
 
 bool saveTextFile(const QString &fileName, const QString &text)
@@ -43,8 +43,11 @@ MainWindow::MainWindow(QWidget *parent)
    ui->graphicsView->init();
    ui->graphicsView->setScene(m_scene);
 
-   connect(m_scene, &Scene::signalToPushCommand, this, [this](QUndoCommand* cmd){
-      m_undoStack->push(cmd);
+   connect(m_scene, &Scene::signalToPushCommand, this, [this](UndoCommand* cmd){
+      if (cmd->hasEffect())
+      {
+         m_undoStack->push(cmd);
+      }
    });
 
    createToolBars();

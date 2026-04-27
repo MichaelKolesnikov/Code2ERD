@@ -4,8 +4,3 @@ UndoCommand::UndoCommand(const QString &text, QUndoCommand *parent) : QUndoComma
 {
    setText(text);
 }
-
-bool UndoCommand::hasEffect() const
-{
-   return childCount() > 0;
-}

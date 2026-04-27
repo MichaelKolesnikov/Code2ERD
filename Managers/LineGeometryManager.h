@@ -8,9 +8,8 @@ class LineGeometryManager
 public:
    LineGeometryManager() = delete;
 
-   static void set(LineModel*, const QPointF&, const QPointF&, bool isFirstPartHorizontal=true, int bendNumber=2);
-   static QVector<QPointF> updateNode(QVector<QPointF>, int, const QPointF&, bool free=false);
-   static QVector<QPointF> nodes(const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal=true, int bendNumber=2);
+   static QVector<QPointF> nodes(const QPointF&, const QPointF&, bool isFirstPartHorizontal=true, int bendNumber=2);
+   static QVector<QPointF> updateNode(QVector<QPointF>, int, const QPointF&, bool free=false, bool ctrl=false);
    static bool isVeryShortToExist(LineModel*);
    static QPointF projectPointOntoLine(const QPointF& p1, const QPointF& p2, const QPointF& p);
    static bool isOnLine(const QPointF& p1, const QPointF& p2, const QPointF& p, qreal delta);
@@ -24,5 +23,8 @@ public:
       const QPointF& a, const QPointF& v1,  // a + t * v1
       const QPointF& b, const QPointF& v2   // b + s * v2
    );
+
+private:
+   static QVector<QPointF> nodesRec(const QPointF &p1, const QPointF &p2, bool isFirstPartHorizontal=true, int bendNumber=2);
 };
 

@@ -15,10 +15,11 @@ public:
    virtual void undo();
    virtual void redo();
 
+   bool hasEffect() const;
+
 private:
    ERDItemModel* m_model;
    AddRemoveCommand::Operation m_operation;
    ERDModel* m_erdModel;
    bool m_isRemoved;
 };
-

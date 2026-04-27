@@ -23,7 +23,7 @@ public:
    void selectLineItem(LineItem*);
    void removeLineItemSelection();
 
-   void prepareForAnchorMoving(AnchorItem* currentDraggedAnchor);
+   void prepareForAnchorMoving(AnchorItem* currentDraggedAnchor, bool ctrl);
    void moveChosenAnchor(QGraphicsSceneMouseEvent *event);
    void finishToMoveChosenAnchor(QGraphicsSceneMouseEvent *event);
 
@@ -50,4 +50,6 @@ private:
 
    void setNewPosToAnchorWithLineNode(QPointF mousePos);
    void setAnchorsOnLineItem(LineItem*);
+
+   bool m_ctrl;
 };

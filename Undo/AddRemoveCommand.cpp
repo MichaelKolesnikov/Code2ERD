@@ -41,3 +41,8 @@ void AddRemoveCommand::redo()
       m_isRemoved = true;
    }
 }
+
+bool AddRemoveCommand::hasEffect() const
+{
+   return true;
+}

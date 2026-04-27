@@ -27,3 +27,8 @@ void ReplaceErdModelCommand::redo()
    m_erdScene->loadModel(m_newErdModel);
    m_oldIsCur = false;
 }
+
+bool ReplaceErdModelCommand::hasEffect() const
+{
+   return m_oldErdModel != m_newErdModel;
+}
