@@ -7,7 +7,7 @@ class LineItem : public ERDItem
    Q_OBJECT
 
 public:
-   enum { Type = UserType + ERDItemType::PropertyLineItemType };
+   enum { Type = UserType + ItemType::PropertyLineItemType };
 
    int type() const override;
 

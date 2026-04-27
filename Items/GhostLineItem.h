@@ -6,7 +6,7 @@ class GhostLineItem : public AncillaryItem
    Q_OBJECT
 
 public:
-   enum { Type = UserType + ERDItemType::GhostLineItemType };
+   enum { Type = UserType + ItemType::GhostLineItemType };
 
    int type() const override;
 

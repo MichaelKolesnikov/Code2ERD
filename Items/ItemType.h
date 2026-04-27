@@ -1,6 +1,6 @@
 #pragma once
 
-enum ERDItemType
+enum ItemType
 {
    EntityItemType,
    PropertyLineItemType,

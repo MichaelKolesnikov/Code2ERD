@@ -57,6 +57,7 @@ HEADERS += \
     Items/AncillaryItem.h \
     Items/GhostLineItem.h \
     Items/IRectHolder.h \
+    Items/ItemType.h \
     Items/LineImpl.h \
     Items/SelectionGroupItem.h \
     Managers/LineGeometryManager.h \
@@ -77,7 +78,6 @@ HEADERS += \
     Holders/PositionHolder.h \
     Interfaces/IERDItem.h \
     Items/ERDItem.h \
-    Items/ERDItemType.h \
     Items/EntityItem.h \
     Items/LineItem.h \
     Items/LinkLineItem.h \

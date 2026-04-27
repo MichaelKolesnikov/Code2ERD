@@ -6,7 +6,7 @@ class LinkLineItem : public LineItem
 {
    Q_OBJECT
 public:
-   enum { Type = UserType + ERDItemType::LinkLineItemType };
+   enum { Type = UserType + ItemType::LinkLineItemType };
 
    int type() const override;
 

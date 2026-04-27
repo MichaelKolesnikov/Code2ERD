@@ -8,7 +8,7 @@ class SelectionGroupItem : public AncillaryItem, public IRectHolder
    Q_INTERFACES(IRectHolder)
 
 public:
-   enum { Type = UserType + ERDItemType::SelectionGroupItemType };
+   enum { Type = UserType + ItemType::SelectionGroupItemType };
 
    int type() const override;
 

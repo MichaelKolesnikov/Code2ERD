@@ -2,7 +2,7 @@
 #include <QGraphicsObject>
 #include "Interfaces/IERDItem.h"
 #include "Models/ERDItemModel.h"
-#include "ERDItemType.h"
+#include "ItemType.h"
 #include "ZValue.h"
 
 class ERDItem : public QGraphicsObject, public IERDItem

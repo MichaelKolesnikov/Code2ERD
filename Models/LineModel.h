@@ -14,7 +14,6 @@ public:
 
    const LineDTO& dto() const { return m_dto; }
 
-   const QString& id() const { return m_dto.id; }
    const QVector<QPointF>& nodes() const { return m_dto.nodes; }
 
    void setNodes(const QVector<QPointF>&);

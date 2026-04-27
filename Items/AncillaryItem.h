@@ -1,6 +1,6 @@
 #pragma once
 #include <QGraphicsObject>
-#include "ERDItemType.h"
+#include "ItemType.h"
 
 class AncillaryItem : public QGraphicsObject
 {

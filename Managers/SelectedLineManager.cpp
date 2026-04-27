@@ -80,9 +80,7 @@ void SelectedLineManager::finishToMoveChosenAnchor(QGraphicsSceneMouseEvent *eve
    {
       m_diagramScene->pushCommand(new ChangeLineNodesCommand(lineModel, m_tmpLine->nodes()));
    }
-   auto it = m_selectedLine;
-   removeLineItemSelection();
-   selectLineItem(it);
+   selectLineItem(m_selectedLine);
 }
 
 bool SelectedLineManager::hasLine() const

@@ -5,7 +5,7 @@ class AnchorItem : public AncillaryItem
 {
    Q_OBJECT
 public:
-   enum { Type = UserType + ERDItemType::AnchorItemType };
+   enum { Type = UserType + ItemType::AnchorItemType };
 
    int type() const override;
 
