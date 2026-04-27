@@ -52,6 +52,10 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
    {
       nodes[node] = p;
    }
+   else if (dist(nodes[node], p) < delta)
+   {
+      nodes[node] = nodes[node];
+   }
    else if (nodes.size() == 1)
    {
       nodes.push_back(p);
@@ -179,6 +183,8 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       auto centerP = p1.value() + p_1.value() - p0;
       auto newP_1 = intersectLines(p_1.value(), (centerP - p_1.value()), p, (centerP - p1.value()));
       auto newP1 = intersectLines(p1.value(), (centerP - p1.value()), p, (centerP - p_1.value()));
+      auto proj_1 = projectPointOntoLine(p0, p_1.value(), p);
+      auto proj1 = projectPointOntoLine(p0, p1.value(), p);
 
       if (dist(centerP, p) < delta)
       {
@@ -192,7 +198,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          }
          else
          {
-            toInsert = {centerP, newP1};
+            toInsert = {centerP, dist(newP1, p1.value()) < delta ? p1.value() : newP1};
          }
       }
       else if (dist(p, newP_1) < delta)
@@ -203,7 +209,7 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
          }
          else
          {
-            toInsert = {newP_1, centerP};
+            toInsert = {dist(newP_1, p_1.value()) < delta ? p_1.value() : newP_1, centerP};
          }
       }
       else if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
@@ -282,6 +288,14 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
                }
             }
          }
+      }
+      else if (dist(proj_1, p) < delta)
+      {
+         toInsert = {p_1.value(), proj_1, newP1};
+      }
+      else if (dist(proj1, p) < delta)
+      {
+         toInsert = {newP_1, proj1, p1.value()};
       }
       else
       {
