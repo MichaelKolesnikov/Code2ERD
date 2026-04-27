@@ -177,122 +177,115 @@ QVector<QPointF> LineGeometryManager::updateNode(QVector<QPointF> nodes, int nod
       QVector<QPointF> toInsert;
 
       auto centerP = p1.value() + p_1.value() - p0;
+      auto newP_1 = intersectLines(p_1.value(), (centerP - p_1.value()), p, (centerP - p1.value()));
+      auto newP1 = intersectLines(p1.value(), (centerP - p1.value()), p, (centerP - p_1.value()));
 
       if (dist(centerP, p) < delta)
       {
          toInsert = {centerP};
       }
-      else
+      else if (dist(p, newP1) < delta)
       {
-         auto newP_1 = intersectLines(p_1.value(), (centerP - p_1.value()), p, (centerP - p1.value()));
-         auto newP1 = intersectLines(p1.value(), (centerP - p1.value()), p, (centerP - p_1.value()));
-
-         if (dist(p, newP1) < delta)
+         if (p2)
          {
-            if (p2)
-            {
-               toInsert = {centerP};
-            }
-            else
-            {
-               toInsert = {centerP, newP1};
-            }
-         }
-         else if (dist(p, newP_1) < delta)
-         {
-            if (p_2)
-            {
-               toInsert = {centerP};
-            }
-            else
-            {
-               toInsert = {newP_1, centerP};
-            }
+            toInsert = {centerP};
          }
          else
          {
-            if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
+            toInsert = {centerP, newP1};
+         }
+      }
+      else if (dist(p, newP_1) < delta)
+      {
+         if (p_2)
+         {
+            toInsert = {centerP};
+         }
+         else
+         {
+            toInsert = {newP_1, centerP};
+         }
+      }
+      else if (p2 && isOnLine(p, newP1, p2.value(), delta) && p_2 && isOnLine(p, newP_1, p_2.value(), delta))
+      {
+         toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p_1.value() - p0), p2.value())};
+         if (p3)
+         {
+            maxToRemove = node + 2;
+         }
+         if (p_3)
+         {
+            minToRemove = node - 2;
+         }
+      }
+      else if (p2 && isOnLine(p, newP1, p2.value(), delta))
+      {
+         toInsert = {
+            newP_1,
+            projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p)
+         };
+         if (p3)
+         {
+            maxToRemove = node + 2;
+            if (dist(p3.value(), p) < delta)
             {
-               toInsert = {projectPointOntoLine(p_2.value(), p_2.value() + (p_1.value() - p0), p2.value())};
-               if (p3)
+               maxToRemove = node + 3;
+               if (p4)
                {
-                  maxToRemove = node + 2;
+                  toInsert = {
+                     projectPointOntoLine(
+                        p4.value(), p3.value(),
+                        p_1.value()
+                     )
+                  };
                }
-               if (p_3)
+               else
                {
-                  minToRemove = node - 2;
+                  toInsert = {
+                     projectPointOntoLine(
+                        p_1.value(), p_1.value() + (p2.value() - p3.value()),
+                        p3.value()
+                     ),
+                     p3.value(),
+                  };
                }
-            }
-            else if (p2 && isOnLine(p, newP1, p2.value(), delta))
-            {
-               toInsert = {
-                  newP_1,
-                  projectPointOntoLine(p2.value(), p2.value() + (p - newP1), p)
-               };
-               if (p3)
-               {
-                  maxToRemove = node + 2;
-                  if (dist(p3.value(), p) < delta)
-                  {
-                     maxToRemove = node + 3;
-                     if (p4)
-                     {
-                        toInsert = {
-                           projectPointOntoLine(
-                              p4.value(), p3.value(),
-                              p_1.value()
-                           )
-                        };
-                     }
-                     else
-                     {
-                        toInsert = {
-                           projectPointOntoLine(
-                              p_1.value(), p_1.value() + (p2.value() - p3.value()),
-                              p3.value()
-                           ),
-                           p3.value(),
-                        };
-                     }
-                  }
-               }
-            }
-            else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
-            {
-               toInsert = {
-                  projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p),
-                  newP1
-               };
-               if (p_3)
-               {
-                  minToRemove = node - 2;
-                  if (dist(p_3.value(), p) < delta)
-                  {
-                     minToRemove = node - 3;
-                     if (p_4)
-                     {
-                        toInsert = {
-                           projectPointOntoLine(
-                              p_4.value(), p_3.value(),
-                              p1.value()
-                           )
-                        };
-                     }
-                     else
-                     {
-                        toInsert = {
-                           p_3.value(),
-                           projectPointOntoLine(p1.value(), p1.value() + (p_2.value() - p_3.value()), p_3.value()),
-                        };
-                     }
-                  }
-               }
-            }
-            else
-            {
-               toInsert = {newP_1, p, newP1};
             }
          }
+      }
+      else if (p_2 && isOnLine(p, newP_1, p_2.value(), delta))
+      {
+         toInsert = {
+            projectPointOntoLine(p_2.value(), p_2.value() + (p - newP_1), p),
+            newP1
+         };
+         if (p_3)
+         {
+            minToRemove = node - 2;
+            if (dist(p_3.value(), p) < delta)
+            {
+               minToRemove = node - 3;
+               if (p_4)
+               {
+                  toInsert = {
+                     projectPointOntoLine(
+                        p_4.value(), p_3.value(),
+                        p1.value()
+                     )
+                  };
+               }
+               else
+               {
+                  toInsert = {
+                     p_3.value(),
+                     projectPointOntoLine(p1.value(), p1.value() + (p_2.value() - p_3.value()), p_3.value()),
+                  };
+               }
+            }
+         }
+      }
+      else
+      {
+         toInsert = {newP_1, p, newP1};
       }
 
       nodes.remove(minToRemove, maxToRemove - minToRemove + 1);
