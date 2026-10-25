@@ -1,0 +1,71 @@
+// A university in Chen notation.
+// Write on the left, the diagram on the right follows. Help > ERD Language Reference (F1).
+
+Entity Student {
+  student_id [key]
+  name {
+    first
+    last
+  }
+  email
+  phone [multivalued]
+  birth_date
+  age [derived, note: 'From birth_date']
+}
+
+Entity Course [color: #d6eadf] {
+  code [key]
+  title
+  credits
+}
+
+Entity Professor {
+  staff_id [key]
+  name
+  office
+}
+
+Entity Department {
+  dept_name [key]
+  building
+}
+
+// A weak entity has no key of its own: it is identified through its owner
+Entity Dependent [weak] {
+  name [partial key]
+  relation
+}
+
+Relationship Enrolls {
+  Student (0, N)
+  Course (1, N)
+  grade
+  semester
+}
+
+Relationship Teaches {
+  Professor (1, N)
+  Course (1, 1) [total]
+}
+
+Relationship WorksIn {
+  Professor (1, 1) [total]
+  Department (1, N)
+  since
+}
+
+Relationship Offers {
+  Department (0, N)
+  Course (1, 1) [total]
+}
+
+// A recursive relationship: the same entity twice, told apart by the roles
+Relationship Prerequisite {
+  Course (0, N) [role: 'requires']
+  Course (0, N) [role: 'required by']
+}
+
+Relationship HasDependent [identifying] {
+  Professor (0, N)
+  Dependent (1, 1) [total]
+}

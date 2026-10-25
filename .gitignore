@@ -1,1 +1,5 @@
 /Code2ERD.pro.user
+*.pro.user*
+*build/*
+/v/*
+/DiagramCreator_23.10.2026_2/*

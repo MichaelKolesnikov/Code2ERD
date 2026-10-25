@@ -1,0 +1,94 @@
+<html>
+<head>
+<style>
+  body { font-family: sans-serif; }
+  h2 { margin-top: 18px; margin-bottom: 4px; }
+  pre { background: rgba(127,127,127,0.12); padding: 8px; font-family: monospace; }
+  td { padding: 2px 10px 2px 0; vertical-align: top; }
+  code { font-family: monospace; }
+</style>
+</head>
+<body>
+<h1>ERD language quick reference</h1>
+<p>The text describes entities, their attributes and the relationships between them; the diagram is drawn in
+Chen notation and follows the text as you type. Keywords and settings are case-insensitive, names are not.</p>
+
+<h2>Entities</h2>
+<pre>Entity Student [color: #dcebfa, note: 'Anyone enrolled'] {
+  student_id [key]
+  "full name"
+  phone [multivalued]
+  age [derived]
+}
+
+Entity Dependent [weak] {
+  name [partial key]
+}
+
+Entity Room           // no attributes: no braces needed</pre>
+<table>
+<tr><td><code>weak</code></td><td>a weak entity: double rectangle</td></tr>
+<tr><td><code>color: #rrggbb</code></td><td>fill color of the shape</td></tr>
+<tr><td><code>note: 'text'</code></td><td>shown in the tooltip</td></tr>
+</table>
+
+<h2>Attributes</h2>
+<p>One attribute per line, or separated by commas. A name with spaces goes in double quotes.</p>
+<table>
+<tr><td><code>key</code> or <code>pk</code></td><td>key attribute: underlined</td></tr>
+<tr><td><code>partial key</code> or <code>partial</code></td><td>discriminator of a weak entity: dashed underline</td></tr>
+<tr><td><code>multivalued</code> or <code>multi</code></td><td>several values: double ellipse</td></tr>
+<tr><td><code>derived</code></td><td>computed from other attributes: dashed ellipse</td></tr>
+<tr><td><code>note: 'text'</code></td><td>shown in the tooltip</td></tr>
+</table>
+<p>A composite attribute lists its parts in braces, as deep as needed:</p>
+<pre>address {
+  street { name, number }
+  city
+}</pre>
+
+<h2>Relationships</h2>
+<pre>Relationship Enrolls [color: #fde6d2] {
+  Student (0, N)
+  Course (1, N) [total]
+  grade
+}
+
+Relationship Has [identifying] {
+  Employee (1)
+  Dependent (N) [total]
+}</pre>
+<p>A line <code>Entity (cardinality)</code> connects the entity; the other lines are attributes of the relationship.
+A relationship connects at least two entities, any number for a ternary or n-ary one.</p>
+<table>
+<tr><td><code>(N)</code>, <code>(1)</code>, <code>(M)</code></td><td>one value, written next to the entity: 1:N, M:N</td></tr>
+<tr><td><code>(0, N)</code>, <code>(1, 1)</code>, <code>(1, *)</code></td><td>(min, max): how many times the entity takes part; min is a number</td></tr>
+<tr><td><code>total</code></td><td>total participation: double line</td></tr>
+<tr><td><code>role: 'text'</code></td><td>the role of the entity, written in the middle of the line</td></tr>
+<tr><td><code>identifying</code> (relationship)</td><td>identifies a weak entity: double diamond</td></tr>
+</table>
+<p>A recursive relationship lists the same entity twice; the two lines curve apart:</p>
+<pre>Relationship Supervises {
+  Employee (0, 1) [role: 'subordinate']
+  Employee (0, N) [role: 'supervisor']
+}</pre>
+
+<h2>Comments</h2>
+<pre>// to the end of the line
+/* across
+   several lines */</pre>
+
+<h2>On the diagram</h2>
+<table>
+<tr><td>Click a shape or a line</td><td>go to its definition in the text</td></tr>
+<tr><td>Drag a shape</td><td>move it; the attributes of an entity or a relationship go along</td></tr>
+<tr><td>Drag the empty canvas, Space+drag, middle button</td><td>pan</td></tr>
+<tr><td>Shift+drag on the canvas</td><td>select several shapes</td></tr>
+<tr><td>Ctrl+wheel</td><td>zoom</td></tr>
+<tr><td>Right click a shape</td><td>arrange its attributes around it again</td></tr>
+<tr><td>Ctrl+Shift+L</td><td>arrange the whole diagram</td></tr>
+<tr><td>Alt+A</td><td>show or hide the attributes</td></tr>
+</table>
+<p>The positions are saved next to the text: <i>name.erd</i> and <i>name.layout.json</i>.</p>
+</body>
+</html>
